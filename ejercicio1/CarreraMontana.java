@@ -1,12 +1,11 @@
 package ejercicio1;
+
 import java.util.ArrayList;
 
-class CarreraMontana extends Carrera {
-    
-    public CarreraMontana(int numBicicletas) {
-        super(new ArrayList<>(), "montaña", 0.2);
-        for (int i = 0; i < numBicicletas; i++) {
-            bicicletas.add(new BicicletaCarretera(i));
-        }    
+public class CarreraMontana extends Carrera {
+    //Constructor para crear Carrera de Montaña 
+    public CarreraMontana(ArrayList<Bicicleta> bicicletas) {
+        super(bicicletas, "montaña", 0.2);
+  
     }
 }

@@ -1,7 +1,8 @@
 package ejercicio1;
 
 public class BicicletaCarretera extends Bicicleta {
-    BicicletaCarretera(int id) {
+    //Constructor
+    public BicicletaCarretera(int id) {
         super(id);
     }
 }
