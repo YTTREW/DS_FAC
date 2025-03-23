@@ -29,3 +29,4 @@ class TexCompositor(Compositor):
     
     def close(self):
         self.driver.quit()
+

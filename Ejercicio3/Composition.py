@@ -18,3 +18,4 @@ class Composition:
         with open(filename, 'w', encoding='utf-8') as file: 
             # Guardo los datos en el fichero
             yaml.dump(data, file, allow_unicode=True)
+

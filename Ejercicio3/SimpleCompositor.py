@@ -18,3 +18,4 @@ class SimpleCompositor(Compositor):
             tags = [tag.get_text(strip=True) for tag in quote.select('.tags .tag')]
             quotes.append({'text': text, 'author': author, 'tags': tags})
         return quotes
+
