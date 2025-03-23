@@ -2,23 +2,23 @@ from llm_decorator import *
 import requests
 
 
-class TranslationDecorator(LLMDecorator):
+class ExpansionDecorator(LLMDecorator):
     """
-    Clase decoradora que traduce el texto de entrada a otro idioma.
+    Clase decoradora que expande el texto de entrada.
     """
 
     def generate_summary(self, text, input_lang, output_lang, model):
         """
-        Traduce un texto de entrada al idioma especificado.
+        Expande el texto de entrada.
 
         Args:
-            text (str): El texto de entrada que se desea traducir.
+            text (str): El texto de entrada que se desea expandir.
             input_lang (str): El idioma del texto de entrada.
-            output_lang (str): El idioma al que se desea traducir el texto.
-            model (str): El nombre del modelo de Hugging Face que se utilizará para la traducción.
+            output_lang (str): El idioma del resumen.
+            model (str): El nombre del modelo de Hugging Face que se utilizará para la expansión.
 
         Returns:
-            str: El texto traducido al idioma especificado.
+            str: El texto expandido.
         """
 
         # Variables para realizar la solicitud POST a la API de Hugging Face
@@ -29,13 +29,16 @@ class TranslationDecorator(LLMDecorator):
         }
 
         data = {
-            "inputs": text,
+            "inputs": f"Expand the following text in more detail: {text}",
+            "parameters": {
+                "max_length": 500
+            }
         }
 
         # Realizar la solicitud POST a la API de Hugging Face
         try:
             response = requests.post(url, headers=headers, json=data)
             response.raise_for_status()
-            return response.json()[0]["translation_text"]
+            return response.json()[0]["generated_text"]
         except Exception as e:
             return f"Error al generar el resumen: {e}"

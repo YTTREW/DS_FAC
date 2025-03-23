@@ -1,5 +1,6 @@
 from basic_llm import *
 from translation_decorator import *
+from expansion_decorator import *
 import json
 import os
 from dotenv import load_dotenv
@@ -44,13 +45,28 @@ if DEBUG:
     print(f"Modelo de traducción: {model_translation}")
     print(f"Modelo de expansión: {model_expansion}\n")
 
-# Mostrar el texto original
-print(f"Texto original:\n{texto}")
 
-# Crear un resumen del texto
-texto_resumido = BasicLLM.generate_summary(texto, input_lang, output_lang, model_llm)
-print(f"\nResumen del texto:\n{texto_resumido}")
+if __name__ == "__main__":
+    # Mostrar el texto original
+    print(f"Texto original:\n{texto}")
 
-# Traducir el texto a otro idioma
-texto_traducido = TranslationDecorator.generate_summary(texto, input_lang, output_lang, model_translation)
-print(f"\nTexto traducido:\n{texto_traducido}")
+    # Crear las instancias de las clases
+    llm_basic = BasicLLM(HUGGINGFACE_API_TOKEN)
+    llm_translation = TranslationDecorator(llm_basic)
+    llm_expansion = ExpansionDecorator(llm_basic)
+
+    # Generar y mostrar el resumen básico del texto original
+    summary = llm_basic.generate_summary(texto, input_lang, output_lang, model_llm)
+    print(f"\nResumen del texto original:\n{summary}")
+
+    # Generar y mostrar el resumen traducido
+    translation = llm_translation.generate_summary(summary, input_lang, output_lang, model_translation)
+    print(f"\nTexto traducido:\n{translation}")
+
+    # Generar y mostrar el resumen expandido
+    expansion = llm_expansion.generate_summary(summary, input_lang, output_lang, model_expansion)
+    print(f"\nTexto expandido:\n{expansion}")
+
+    # Generar y mostrar la traducción del texto expandido
+    translation_expansion = llm_translation.generate_summary(expansion, input_lang, output_lang, model_translation)
+    print(f"\nTexto expandido y traducido:\n{translation_expansion}")

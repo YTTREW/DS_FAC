@@ -1,31 +1,29 @@
 from llm import *
-from transformers import pipeline
-import os
-from dotenv import load_dotenv
 import requests
-
-# Cargar variables de entorno desde el archivo .env
-load_dotenv()
-
-# Obtener el token de Hugging Face
-HUGGINGFACE_API_TOKEN = os.getenv("HUGGINGFACE_API_TOKEN")
-
-# Verificar que el token se haya cargado correctamente
-if HUGGINGFACE_API_TOKEN is None:
-    raise ValueError("No se ha encontrado el token de Hugging Face en el archivo .env")
-else:
-    print("Token de Hugging Face cargado correctamente")
 
 
 class BasicLLM(LLM):
-    def __init__(self, model):
-        self.model = model
+    """
+    Clase que implementa la interfaz LLM. Utiliza la API de Hugging Face para generar resúmenes a partir de un texto de entrada.
+    """
 
-    def generate_summary(text, input_lang, output_lang, model):
-        """Devuelve un resumen del texto de entrada utilizando el modelo especificado y la API de Hugging Face.
+    def __init__(self, api_token):
+        """
+        Inicializa la clase con el token de la API de Hugging Face.
+
+        Args:
+            api_token (str): El token de la API de Hugging Face.
+        """
+        self.api_token = api_token
+
+    def generate_summary(self, text, input_lang, output_lang, model):
+        """
+        Devuelve un resumen del texto de entrada utilizando el modelo especificado y la API de Hugging Face.
 
         Args:
             text (str): El texto de entrada que se desea resumir.
+            input_lang (str): El idioma del texto de entrada (no se utiliza en esta implementación, pero se mantiene por compatibilidad con la interfaz).
+            output_lang (str): El idioma del resumen (no se utiliza en esta implementación, pero se mantiene por compatibilidad con la interfaz).
             model (str): El nombre del modelo de Hugging Face que se utilizará para generar el resumen.
 
         Returns:
@@ -33,14 +31,14 @@ class BasicLLM(LLM):
         """
 
         # Variables para realizar la solicitud POST a la API de Hugging Face
-        url = "https://api-inference.huggingface.co/models/" + model
+        url = f"https://api-inference.huggingface.co/models/{model}"
 
         headers = {
-            "Authorization": f"Bearer {HUGGINGFACE_API_TOKEN}",
+            "Authorization": f"Bearer {self.api_token}",
         }
 
         data = {
-            "inputs": "Haz un resumen de este texto: " + text,
+            "inputs": f"Haz un resumen de este texto: {text}",
         }
 
         # Realizar la solicitud POST a la API de Hugging Face
