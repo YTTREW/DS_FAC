@@ -1,2 +1,6 @@
+# Generales
+.venv
+
+# Práctica 1
 quotes_selenium.yml
 quotes_bs.yml
