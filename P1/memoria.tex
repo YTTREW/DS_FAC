@@ -1,0 +1,28 @@
+\documentclass{article}
+
+\begin{document}
+
+\section{Ejercicio 1. Patrón Factoría Abstracta en Java}
+Para realizar el programa se van a utilizar hebras para simular dos carreras de manera simultánea, de montaña y de carretera. Ambas contarán con el mismo número de bicicletas y tendrán una duración de 60 segundos.  En cada carrera, habrá una determinada tasa de abandono del total de bicicletas que participan:
+
+\begin{itemize}
+    \item {En la carrera de montaña, se retirará el 20 \% de las bicicletas antes de que termine la carrera.}
+    \item {En la carrera de carretera, se retirará el 10 \% de las bicicletas antes de que finalice la carrera.}
+    \item {En ambas carreras, todas las bicicletas se retirarán de manera simultánea.}
+
+\end{itemize}
+
+Para gestionar la fabricación de bicicletas y carreras de cada tipo, se implementará un patrón de diseño Factoría Abstracta junto con el patrón Método Factoría.
+\vspace{0.2cm}
+
+
+A continuación se van a detallar las diferentes interfaces y clases que se han definido en el programa en base a los patrones aplicados y el rol que tiene cada una dentro del ejercicio.
+
+\subsection{Clase FactoriaCarreraYBicicleta}
+La interfaz FactoriaCarreraYBicicleta define el patrón Factoría Abstracta para la creación pública de los dos objetos del ejercicio, las carreras y las bicicletas. Se declaran dos métodos:
+\begin{itemize}
+    \item {crearCarrera(ArrayList\textless{}Bicicleta\textgreater{} bicicletas)}: Crea y devuelve un objeto de tipo carrera, permitiendo crear los diferentes tipos de carreras (carretera y montaña).
+    \item {crearBicicleta(int id)}: Crea y devuelve un objeto de tipo bicicleta, permitiendo crear los diferentes tipos de bicicletas (carretera y montaña).
+\end{itemize}
+
+\end{document}
