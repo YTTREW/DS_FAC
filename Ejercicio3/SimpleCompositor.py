@@ -3,11 +3,13 @@ import requests
 from bs4 import BeautifulSoup
 # Estrategia con BeautifulSoup
 class SimpleCompositor(Compositor):
+    # Método para extraer el html de la pagina
     def compose(self, url):
         response = requests.get(url)
         soup = BeautifulSoup(response.text, 'html.parser')
         return self.extraer_datos(soup)
 
+    # Método para extraer los datos de la página
     def extraer_datos(self, soup):
         quotes = []
         for quote in soup.select('.quote'):

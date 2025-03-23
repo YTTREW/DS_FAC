@@ -6,6 +6,7 @@ from selenium.webdriver.chrome.options import Options
 
 # Estrategia con Selenium
 class TexCompositor(Compositor):
+    # Metodo para abrir el navegador chrome sin que se muestre en pantalla
     def __init__(self):
         options = Options()
         options.add_argument('--headless')
@@ -15,7 +16,7 @@ class TexCompositor(Compositor):
         self.driver.get(url)
         quotes = self.extraer_datos()
         return quotes
-    
+    # Metodo para extraer los datos de la pagina
     def extraer_datos(self):
         quotes = []
         elements = self.driver.find_elements(By.CLASS_NAME, 'quote')

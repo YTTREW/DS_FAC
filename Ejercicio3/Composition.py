@@ -6,12 +6,15 @@ class Composition:
         self.compositor = compositor
 
     def obtener_datos(self, base_url, pages):
-        all_quotes = []
-        for page in range(1, pages + 1):
+        all_quotes = [] # Lista que almacenará todas las citas
+        for page in range(1, pages + 1): # Iteramos sobre las páginas
             url = f"{base_url}/page/{page}/"
-            all_quotes.extend(self.compositor.compose(url))
+        # Obtenemos las citas de la página y las añadimos a la lista
+            all_quotes.extend(self.compositor.compose(url)) 
         return all_quotes
 
     def save_to_yaml(self, data, filename):
-        with open(filename, 'w', encoding='utf-8') as file:
+        #Creo fichero de escritura
+        with open(filename, 'w', encoding='utf-8') as file: 
+            # Guardo los datos en el fichero
             yaml.dump(data, file, allow_unicode=True)
