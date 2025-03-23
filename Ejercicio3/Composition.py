@@ -5,7 +5,7 @@ class Composition:
     def __init__(self, compositor: Compositor):
         self.compositor = compositor
 
-    def obtener_datos(self, base_url, pages=5):
+    def obtener_datos(self, base_url, pages):
         all_quotes = []
         for page in range(1, pages + 1):
             url = f"{base_url}/page/{page}/"
