@@ -1,27 +1,27 @@
 package ejercicio4;
 
 public class Message {
-    String correo;
-    String contrasena;
+    String email;
+    String password;
 
-    public Message(String correo, String contrasena) {
-        this.correo = correo;
-        this.contrasena = contrasena;
+    public Message(String email, String password) {
+        this.email = email;
+        this.password = password;
     }
 
-    public String getCorreo() {
-        return correo;
+    public String getEmail() {
+        return email;
     }
 
-    public String getContrasena() {
-        return contrasena;
+    public String getPassword() {
+        return password;
     }
 
-    public void setCorreo(String correo) {
-        this.correo = correo;
+    public void setEmail(String email) {
+        this.email = email;
     }
 
-    public void setContrasena(String contrasena) {
-        this.contrasena = contrasena;
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

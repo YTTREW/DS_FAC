@@ -9,6 +9,9 @@ public class Main {
 
         filterManager.addFilter(new MailFilter());
         filterManager.addFilter(new DomainFilter());
+        filterManager.addFilter(new PasswordLengthFilter());
+        filterManager.addFilter(new PasswordUpperCaseFilter());
+        filterManager.addFilter(new PasswordSpecialCharacterFilter());
 
         Scanner scanner = new Scanner(System.in);
 
