@@ -1,7 +1,11 @@
 from basic_llm import *
+from translation_decorator import *
 import json
 import os
 from dotenv import load_dotenv
+
+# DEBUG: Variable para activar o desactivar la depuración
+DEBUG = True
 
 # Cargar variables de entorno desde el archivo .env
 load_dotenv()
@@ -32,9 +36,21 @@ model_llm = config["model_llm"]
 model_translation = config["model_translation"]
 model_expansion = config["model_expansion"]
 
+if DEBUG:
+    print(f"\nTexto: {texto}")
+    print(f"Idioma de entrada: {input_lang}")
+    print(f"Idioma de salida: {output_lang}")
+    print(f"Modelo LLM: {model_llm}")
+    print(f"Modelo de traducción: {model_translation}")
+    print(f"Modelo de expansión: {model_expansion}\n")
+
 # Mostrar el texto original
 print(f"Texto original:\n{texto}")
 
 # Crear un resumen del texto
 texto_resumido = BasicLLM.generate_summary(texto, input_lang, output_lang, model_llm)
 print(f"\nResumen del texto:\n{texto_resumido}")
+
+# Traducir el texto a otro idioma
+texto_traducido = TranslationDecorator.generate_summary(texto, input_lang, output_lang, model_translation)
+print(f"\nTexto traducido:\n{texto_traducido}")

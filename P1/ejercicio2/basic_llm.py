@@ -22,7 +22,15 @@ class BasicLLM(LLM):
         self.model = model
 
     def generate_summary(text, input_lang, output_lang, model):
-        """Generates a summary of the input text using the model and Huggingface's pipeline."""  # TODO: español
+        """Devuelve un resumen del texto de entrada utilizando el modelo especificado y la API de Hugging Face.
+
+        Args:
+            text (str): El texto de entrada que se desea resumir.
+            model (str): El nombre del modelo de Hugging Face que se utilizará para generar el resumen.
+
+        Returns:
+            str: El resumen del texto de entrada.
+        """
 
         # Variables para realizar la solicitud POST a la API de Hugging Face
         url = "https://api-inference.huggingface.co/models/" + model
@@ -35,8 +43,8 @@ class BasicLLM(LLM):
             "inputs": "Haz un resumen de este texto: " + text,
         }
 
+        # Realizar la solicitud POST a la API de Hugging Face
         try:
-            # Realizar la solicitud POST a la API de Hugging Face
             response = requests.post(url, headers=headers, json=data)
             response.raise_for_status()
             return response.json()[0]["summary_text"]
