@@ -1,5 +1,6 @@
 # Generales
 .venv
+__pycache__
 
 # Práctica 1
 quotes_selenium.yml
