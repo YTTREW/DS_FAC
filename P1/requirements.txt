@@ -1,5 +1,8 @@
 # Ejercicio 2
 python-dotenv==1.0.1
+transformers==4.50.0
+#torch==2.6.0
+tensorflow==2.19.0
 
 # Ejercicio 3
 requests==2.32.3
