@@ -1,6 +1,12 @@
 # Generales
 .venv
 __pycache__
+memoria.aux
+memoria.fdb_latexmk
+memoria.fls
+memoria.log
+memoria.synctex.gz
+memoria.pdf
 
 # Práctica 1
 quotes_selenium.yml
