@@ -8,12 +8,16 @@ import yaml
 from abc import ABC, abstractmethod
 
 # Clase base Compositor (Strategy)
+
+
 class Compositor(ABC):
     @abstractmethod
     def compose(self, url):
         pass
 
 # Estrategia con BeautifulSoup
+
+
 class SimpleCompositor(Compositor):
     def compose(self, url):
         response = requests.get(url)
@@ -30,17 +34,19 @@ class SimpleCompositor(Compositor):
         return quotes
 
 # Estrategia con Selenium
+
+
 class TexCompositor(Compositor):
     def __init__(self):
         options = Options()
         options.add_argument('--headless')
         self.driver = webdriver.Chrome(service=Service(), options=options)
-    
+
     def compose(self, url):
         self.driver.get(url)
         quotes = self.extraer_datos()
         return quotes
-    
+
     def extraer_datos(self):
         quotes = []
         elements = self.driver.find_elements(By.CLASS_NAME, 'quote')
@@ -50,11 +56,13 @@ class TexCompositor(Compositor):
             tags = [tag.text for tag in element.find_elements(By.CLASS_NAME, 'tag')]
             quotes.append({'text': text, 'author': author, 'tags': tags})
         return quotes
-    
+
     def close(self):
         self.driver.quit()
 
 # Clase principal Composition
+
+
 class Composition:
     def __init__(self, compositor: Compositor):
         self.compositor = compositor
@@ -70,15 +78,16 @@ class Composition:
         with open(filename, 'w', encoding='utf-8') as file:
             yaml.dump(data, file, allow_unicode=True)
 
+
 if __name__ == "__main__":
     BASE_URL = "https://quotes.toscrape.com"
-    
+
     # Usando SimpleCompositor (BeautifulSoup)
     bs_composition = Composition(SimpleCompositor())
     bs_quotes = bs_composition.obtener_datos(BASE_URL)
     bs_composition.save_to_yaml(bs_quotes, "quotes_bs.yml")
     print("Datos guardados con SimpleCompositor en 'quotes_bs.yml'")
-    
+
     # Usando TexCompositor (Selenium)
     selenium_composition = Composition(TexCompositor())
     selenium_quotes = selenium_composition.obtener_datos(BASE_URL)
