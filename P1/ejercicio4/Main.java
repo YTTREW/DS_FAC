@@ -4,12 +4,11 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        AuthTarget authTarget = new AuthTarget(); 
+        AuthTarget authTarget = new AuthTarget();
         FilterManager filterManager = new FilterManager(authTarget);
 
-        
-        filterManager.addFilter(new FilterMail());
-        filterManager.addFilter(new FilterDomain());
+        filterManager.addFilter(new MailFilter());
+        filterManager.addFilter(new DomainFilter());
 
         Scanner scanner = new Scanner(System.in);
 

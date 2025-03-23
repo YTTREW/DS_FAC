@@ -4,7 +4,7 @@ public class Message {
     String correo;
     String contrasena;
 
-    public Message ( String correo, String contrasena ) {
+    public Message(String correo, String contrasena) {
         this.correo = correo;
         this.contrasena = contrasena;
     }
@@ -17,11 +17,11 @@ public class Message {
         return contrasena;
     }
 
-    public void setCorreo( String correo ) {
+    public void setCorreo(String correo) {
         this.correo = correo;
     }
 
-    public void setContrasena( String contrasena ) {
+    public void setContrasena(String contrasena) {
         this.contrasena = contrasena;
     }
 }

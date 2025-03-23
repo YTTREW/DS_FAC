@@ -4,7 +4,6 @@ package ejercicio4;
 import java.util.ArrayList;
 import java.util.List;
 
-
 public class FilterChain {
     private List<Filter> filters = new ArrayList<>();
     private AuthTarget target;
@@ -21,7 +20,7 @@ public class FilterChain {
         for (Filter filter : filters) {
             filter.execute(message);
         }
-        
+
         if (target != null) {
             target.authenticate(message);
         }

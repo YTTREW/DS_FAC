@@ -1,7 +1,6 @@
 package ejercicio4;
 
-
-public class FilterDomain implements Filter{
+public class DomainFilter implements Filter {
     @Override
     public void execute(Message message) throws Exception {
         String correo = message.getCorreo();

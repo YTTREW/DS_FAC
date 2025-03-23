@@ -5,4 +5,3 @@ public class AuthTarget {
         System.out.println("Correcta autenticación para el correo: " + message.getCorreo());
     }
 }
-

@@ -1,6 +1,6 @@
 package ejercicio4;
 
-public class FilterMail implements Filter {
+public class MailFilter implements Filter {
     @Override
     public void execute(Message message) throws Exception {
         String correo = message.getCorreo();
