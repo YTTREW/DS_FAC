@@ -1,0 +1,8 @@
+{
+    "texto": "La asignatura de Desarrollo de Software es fundamental en la formación de cualquier ingeniero en informática. A través de ella, los estudiantes adquieren conocimientos sobre metodologías ágiles, patrones de diseño, pruebas de software y buenas prácticas de programación. Además, esta materia permite desarrollar habilidades clave como el trabajo en equipo, la gestión de proyectos y la resolución de problemas complejos. En un mundo donde la tecnología avanza rápidamente, contar con una base sólida en desarrollo de software es esencial para adaptarse a los cambios y enfrentar los desafíos del mercado laboral.",
+    "input_lang": "es",
+    "output_lang": "en",
+    "model_llm": "facebook/bart-large-cnn",
+    "model_translation": "Helsinki-NLP/opus-mt-es-en",
+    "model_expansion": "facebook/blenderbot-400M-distill"
+}
