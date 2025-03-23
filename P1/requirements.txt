@@ -1,3 +1,7 @@
+# Ejercicio 2
+python-dotenv==1.0.1
+
+# Ejercicio 3
 requests==2.32.3
 bs4==0.0.2
 selenium==4.30.0
