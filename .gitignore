@@ -1,3 +1,10 @@
+# Memoria
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+
 # Generales
 .venv
 __pycache__
