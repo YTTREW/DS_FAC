@@ -1,0 +1,1 @@
+ /home/fernando/universidad/DS_FAC/P2/hugging_face_app/.dart_tool/flutter_build/e8863b8833f620904b18f612cdd27252/native_assets.json: 
