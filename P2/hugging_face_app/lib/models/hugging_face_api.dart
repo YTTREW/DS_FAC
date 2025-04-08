@@ -1,6 +1,6 @@
 import 'dart:convert';
 import 'package:http/http.dart' as http;
-import 'package:hugging_face_app/secrets.dart';
+import 'package:hugging_face_app/secrets/secrets.dart';
 
 class HuggingFaceAPI {
   final String _apiUrl = huggingFaceModel;

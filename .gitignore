@@ -19,7 +19,7 @@ P2/hugging_face_app/android/app/.cxx/*
 P2/hugging_face_app/linux/flutter/ephemeral/*
 P2/hugging_face_app/android/.gradle/*
 
-P2/hugging_face_app/lib/secrets.dart
+P2/hugging_face_app/lib/secrets/secrets.dart
 
 
 # Flutter
