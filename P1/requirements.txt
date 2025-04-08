@@ -1,0 +1,12 @@
+# Ejercicio 2
+python-dotenv==1.0.1
+transformers==4.50.0
+#torch==2.6.0
+tensorflow==2.19.0
+tf-keras==2.19.0
+
+# Ejercicio 3
+requests==2.32.3
+bs4==0.0.2
+selenium==4.30.0
+PyYAML==6.0.2
