@@ -1,0 +1,26 @@
+# Memoria
+*.aux
+*.fdb_latexmk
+*.fls
+*.log
+*.synctex.gz
+
+# Generales
+.venv
+__pycache__
+
+# Práctica 1
+quotes_selenium.yml
+quotes_bs.yml
+P1/ejercicio2/.env
+
+# Práctica 2
+P2/hugging_face_app/lib/secrets.dart
+
+
+# Flutter
+.dart_tool/
+.idea/
+build/
+android/.cxx/
+android/build
