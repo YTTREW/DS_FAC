@@ -1,8 +1,0 @@
-{
-    "texto": "The Software Development course is fundamental in the training of any computer engineer. Through it, students acquire knowledge about agile methodologies, design patterns, software testing, and best programming practices. Additionally, this subject helps develop key skills such as teamwork, project management, and problem-solving for complex challenges. In a world where technology advances rapidly, having a solid foundation in software development is essential to adapt to changes and face the challenges of the job market.",
-    "input_lang": "en",
-    "output_lang": "es",
-    "model_llm": "facebook/bart-large-cnn",
-    "model_translation": "Helsinki-NLP/opus-mt-en-es",
-    "model_expansion": "tiiuae/falcon-7b-instruct"
-}
