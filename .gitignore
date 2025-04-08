@@ -23,4 +23,6 @@ P2/hugging_face_app/lib/secrets.dart
 .idea/
 build/
 android/.cxx/
+android/app/.cxx/
 android/build
+android/local.properties
