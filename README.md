@@ -48,9 +48,17 @@ python3 ejercicio3.py
 
 ### Ejercicio 4
 
-Para poder hacer uso de la API de HuggingFace se debe completar el siguiente campo del archivo `lib/secrets.dart`:
+Para poder hacer uso de la API de HuggingFace se debe clonar el archivo `lib/secrets/secrets_template.dart`:
 
+```bash
+
+cp lib/secrets/secrets_template.dart lib/secrets/secrets.dart
 ```
+
+Una vez clonado, se debe modificar el archivo `lib/secrets/secrets.dart` para incluir el token de la API de HuggingFace:
+
+```dart
+
 const String huggingFaceToken = 'YOUR_HUGGING_FACE_API_TOKEN';
 ```
 
@@ -58,5 +66,5 @@ En dicho campo cambiaremos `'YOUR_HUGGING_FACE_API_TOKEN'` por el token generado
 [web de HuggingFace](https://huggingface.co/settings/tokens).
 
 La ruta para hacer la llamada a los modelos ya se encuentra indicada. Para modificar la ruta únicamente
-hace falta cambiar el campo `huggingFaceModel`, en nuestro caso haremos uso de la
+hace falta cambiar el campo `huggingFaceModel`. En nuestro caso haremos uso de la
 URL https://api-inference.huggingface.co/models/.
