@@ -17,7 +17,8 @@ class HuggingFaceAPI {
     final response = await http.post(url, headers: headers, body: body);
 
     if (response.statusCode == 200) {
-      final responseData = json.decode(response.body);
+      final responseBody = utf8.decode(response.bodyBytes);
+      final responseData = json.decode(responseBody);
       return responseData[0]['generated_text'] ?? 'No response';
     } else {
       return 'Error: ${response.statusCode}';
