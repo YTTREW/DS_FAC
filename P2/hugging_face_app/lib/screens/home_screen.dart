@@ -20,13 +20,15 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isLoading = false;
 
+  // Inicializa los modelo de lenguaje
+  GPT2Strategy gpt2Strategy = GPT2Strategy(HuggingFaceAPI());
+  GPT3Strategy gpt3Strategy = GPT3Strategy(HuggingFaceAPI());
+
   @override
   void initState() {
     super.initState();
     // Inicializa el valor por defecto
-    selectedStrategy = GPT2Strategy(
-      api,
-    ); // Ensure this matches one of the DropdownMenuItem values
+    selectedStrategy = gpt2Strategy;
   }
 
   // Método para obtener la respuesta de la estrategia seleccionada
@@ -69,14 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   value:
                       selectedStrategy is GPT2Strategy
                           ? selectedStrategy
-                          : GPT2Strategy(api),
+                          : gpt2Strategy,
                   child: Text('GPT-2'),
                 ),
                 DropdownMenuItem(
                   value:
                       selectedStrategy is GPT3Strategy
                           ? selectedStrategy
-                          : GPT3Strategy(api),
+                          : gpt3Strategy,
                   child: Text('GPT-3'),
                 ),
               ],
