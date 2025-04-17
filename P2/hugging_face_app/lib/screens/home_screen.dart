@@ -18,6 +18,8 @@ class _HomeScreenState extends State<HomeScreen> {
   String response = '';
   final TextEditingController controller = TextEditingController();
 
+  bool isLoading = false;
+
   @override
   void initState() {
     super.initState();
@@ -29,10 +31,17 @@ class _HomeScreenState extends State<HomeScreen> {
 
   // Método para obtener la respuesta de la estrategia seleccionada
   void _getResponse() async {
+    setState(() {
+      isLoading = true;
+      response = ''; // limpia la respuesta anterior si quieres
+    });
+
     String inputMessage = controller.text;
     String result = await selectedStrategy.generateResponse(inputMessage);
+
     setState(() {
       response = result;
+      isLoading = false;
     });
   }
 
@@ -82,12 +91,17 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(labelText: 'Enter your message'),
             ),
             SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _getResponse,
-              child: Text('Send Message'),
+            Center(
+              child:
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                        onPressed: _getResponse,
+                        child: const Text('Send Message'),
+                      ),
             ),
             SizedBox(height: 20),
-            ResponseDisplay(response: response),
+            ResponseDisplay(response: response, isLoading: isLoading),
           ],
         ),
       ),
