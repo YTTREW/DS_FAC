@@ -3,7 +3,7 @@ import 'hugging_face_api.dart';
 
 class GPT3Strategy implements LanguageModelStrategy {
   final HuggingFaceAPI api;
-  static const String _model = 'EleutherAI/gpt-neo-2.7B';
+  static const String _model = 'distilgpt2';
 
   GPT3Strategy(this.api);
 

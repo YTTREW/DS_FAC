@@ -18,21 +18,32 @@ class _HomeScreenState extends State<HomeScreen> {
   String response = '';
   final TextEditingController controller = TextEditingController();
 
+  bool isLoading = false;
+
+  // Inicializa los modelo de lenguaje
+  GPT2Strategy gpt2Strategy = GPT2Strategy(HuggingFaceAPI());
+  GPT3Strategy gpt3Strategy = GPT3Strategy(HuggingFaceAPI());
+
   @override
   void initState() {
     super.initState();
     // Inicializa el valor por defecto
-    selectedStrategy = GPT2Strategy(
-      api,
-    ); // Ensure this matches one of the DropdownMenuItem values
+    selectedStrategy = gpt2Strategy;
   }
 
   // Método para obtener la respuesta de la estrategia seleccionada
   void _getResponse() async {
+    setState(() {
+      isLoading = true;
+      response = ''; // limpia la respuesta anterior si quieres
+    });
+
     String inputMessage = controller.text;
     String result = await selectedStrategy.generateResponse(inputMessage);
+
     setState(() {
       response = result;
+      isLoading = false;
     });
   }
 
@@ -60,14 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                   value:
                       selectedStrategy is GPT2Strategy
                           ? selectedStrategy
-                          : GPT2Strategy(api),
+                          : gpt2Strategy,
                   child: Text('GPT-2'),
                 ),
                 DropdownMenuItem(
                   value:
                       selectedStrategy is GPT3Strategy
                           ? selectedStrategy
-                          : GPT3Strategy(api),
+                          : gpt3Strategy,
                   child: Text('GPT-3'),
                 ),
               ],
@@ -82,12 +93,17 @@ class _HomeScreenState extends State<HomeScreen> {
               decoration: InputDecoration(labelText: 'Enter your message'),
             ),
             SizedBox(height: 10),
-            ElevatedButton(
-              onPressed: _getResponse,
-              child: Text('Send Message'),
+            Center(
+              child:
+                  isLoading
+                      ? const Center(child: CircularProgressIndicator())
+                      : ElevatedButton(
+                        onPressed: _getResponse,
+                        child: const Text('Send Message'),
+                      ),
             ),
             SizedBox(height: 20),
-            ResponseDisplay(response: response),
+            ResponseDisplay(response: response, isLoading: isLoading),
           ],
         ),
       ),
