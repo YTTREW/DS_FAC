@@ -21,7 +21,7 @@ class HuggingFaceAPI {
       final responseData = json.decode(responseBody);
       return responseData[0]['generated_text'] ?? 'No response';
     } else {
-      return 'Error: ${response.statusCode}';
+      return 'Error: ${response.statusCode} - ${response.body}';
     }
   }
 }
