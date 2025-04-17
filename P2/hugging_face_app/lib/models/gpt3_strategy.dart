@@ -3,7 +3,7 @@ import 'hugging_face_api.dart';
 
 class GPT3Strategy implements LanguageModelStrategy {
   final HuggingFaceAPI api;
-  static const String _model = 'distilgpt2';
+  static const String _model = 'distilbert/distilgpt2';
 
   GPT3Strategy(this.api);
 
