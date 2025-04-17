@@ -1,0 +1,237 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{enumitem}
+
+% Enlaces
+\usepackage{hyperref}
+
+% Evitar que se corten las palabras al final de línea
+\usepackage[none]{hyphenat}
+
+% Paquete para el manejo de imágenes
+\usepackage{float}
+
+% Establecer el estilo de los ítems en todo el documento
+\setlist[itemize,1]{label=\textbullet}
+
+\begin{document}
+
+\begin{titlepage}
+
+    \centering
+    \vspace*{1cm}
+    \vspace{0.5cm}
+    {\Huge\bfseries Desarrollo de Software - Práctica 2 \par}
+    \vspace{1.5cm}
+    \includegraphics[width=0.9\textwidth]{images/portada.png}
+    \vspace{1.5cm}
+    \par % Nuevo párrafo
+    \vspace{1cm}
+    {\Large Fernando Cuesta Bueno
+        \\
+        Carlos Fernández Arrabal
+        \\
+        Antonio Manuel García Mesa
+        \\
+        17/04/2025\par}
+
+\end{titlepage}
+
+% Índice
+\tableofcontents
+
+\newpage
+
+\section{Introducción}
+Esta memoria corresponde a la parte grupal de la práctica 2 de la asignatura de Desarrollo de Software del Grado en Ingeniería Informática de la Universidad de Granada.
+
+En esta práctica se van a realizar una serie de programas basados en las tecnologías de Flutter y Dart.
+Se tratatán diferentes objetivos tales como la adaptación de software, ampliación de la funcionalidad y aplicación de diferentes patrones arquitectónicos estudiados en la asignatura.
+
+\section{Ejercicio 3.1}
+
+En este ejercicio se pide que se realice reingeniería y se realicen una serie de mantenimientos a la actividad del patrón Filtros de Intercepcción de la práctica 1.
+
+\subsection{Mantenimiento Adaptativo}
+
+El mantenimiento adaptativo es el tipo de mantenimiento que se realiza para adaptar el software a un entorno cambiante. En este caso, se ha realizado un mantenimiento adaptativo al transformar el código de Java a Flutter/Dart, ya que la práctica 1 estaba implementada en Java y ahora se ha adaptado a un nuevo lenguaje y framework.
+
+En la figura \ref{fig:3-adaptativo} se puede observar la pantalla de la aplicación en Flutter, donde se han adaptado los filtros de la práctica 1 a un nuevo entorno.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-adaptativo.png}
+    \caption{Pantalla de la aplicación Email Filter App en Flutter}
+    \label{fig:3-adaptativo}
+\end{figure}
+
+\subsection{Mantenimiento Perfectivo y Preventivo}
+
+El mantenimiento perfectivo es el tipo de mantenimiento que se realiza para mejorar la funcionalidad del software. En este caso, se ha realizado un mantenimiento perfectivo al agregar nuevas funcionalidades a la aplicación, como la posibilidad de seleccionar todos los filtros a la vez, así como la opción de quitar todos los filtros o seleccionar uno por uno.
+
+El mantenimiento preventivo es el tipo de mantenimiento que se realiza para prevenir errores en el software. En este caso, se ha realizado un mantenimiento preventivo al agregar validaciones a los filtros, como la verificación de si el correo electrónico ya está registrado o no.
+
+\subsubsection{email\_already\_used\_filter.dart}
+
+El archivo \textbf{email\_already\_used\_filter.dart} implementa un nuevo filtro que verifica si el correo electrónico introducido por el usuario ha sido registrado anteriormente. Para ello implementa un método \textbf{execute()} que realiza lo siguiente:
+captura del \textbf{TextField} el email y comprueba si está presente en el campo privado \textbf{emailRegistados}, el cual es una lista con los emails que han sido registrados previemente. Si no está presente, se añade a la lista, si está presente, se lanza una excepción con su notificación correspondiente.
+
+\subsection{Sistema de Notificaciones}
+
+El sistema de notificaciones es una funcionalidad que se ha agregado a la aplicación para informar al usuario sobre el estado de los filtros. En este caso, una vez que el usuario pulsa en el botón de \textbf{Autenticar}, se muestra una notificación emergente en la parte inferior de la pantalla, informando al usuario si los filtros han pasado correctamente o si ha habido algún problema con alguno de ellos.
+
+En las figuras \ref{fig:3-notificacion-aceptada} y \ref{fig:3-notificacion-rechazada} se pueden observar las notificaciones que se muestran al usuario. En esta segunda figura, se muestra que el filtro de correo electrónico ya está registrado funciona correctamente y se muestra un mensaje de error al usuario.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-notificacion-aceptada.png}
+    \caption{Notificación de aceptación de filtros}
+    \label{fig:3-notificacion-aceptada}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-notificacion-rechazada.png}
+    \caption{Notificación de rechazo de filtros}
+    \label{fig:3-notificacion-rechazada}
+\end{figure}
+
+\subsection{auth\_target.dart}
+
+El archivo \textbf{auth\_target.dart} define la interfaz \textbf{AuthTarget} y una implementación de la misma llamada \textbf{PrintAuthTarget}. Su propósito es proporcionar un objetivo de autenticación que será ejecutado después de que todos los filtros aplicados a las credenciales (correo y contraseña) hayan sido validados correctamente.
+
+\begin{itemize}
+    \item \textbf{AuthTarget}: interfaz que define el método \textbf{authenticate()} que recibe un objeto de tipo \textbf{Credentials} con el correo y la contraseña del usuario.
+    \item \textbf{PrintAuthTarget}: implementación de la interfaz \textbf{AuthTarget} que simplemente imprime en la consola el correo y la contraseña del usuario. Esta implementación es útil para propósitos de depuración y demostración, pero en un entorno de producción se debería implementar una lógica de autenticación real.
+\end{itemize}
+
+\subsection{credentials.dart}
+
+El archivo \textbf{credentials.dart} define la clase \textbf{Credentials} que representa las credenciales de un usuario, es decir, su correo electrónico y contraseña. Esta clase tiene dos propiedades: \textbf{email} y \textbf{password}, que son de tipo \textbf{String}.
+
+Presenta un widget \textbf{CredentialsForm} que es un formulario que permite al usuario introducir su correo electrónico y contraseña. Este formulario utiliza dos \textbf{TextEditingController} para gestionar la entrada de texto del usuario.
+
+El widget \textbf{CredentialsForm} es un \textbf{StatefulWidget}, lo que significa que tiene un estado interno que puede cambiar a lo largo del tiempo. Este estado se gestiona mediante la clase \textbf{CredentialsFormState}, que es donde se definen los controladores de texto y se gestionan los eventos de entrada del usuario.
+
+\begin{itemize}
+    \item \textbf{emailController}: controlador para el campo de correo electrónico.
+    \item \textbf{passwordController}: controlador para el campo de contraseña.
+\end{itemize}
+
+Ambos controladores tienen un \textbf{listener} que se activa cuando el usuario introduce texto en los campos correspondientes. Cuando el usuario introduce su correo electrónico y contraseña, estos valores se almacenan en los controladores de texto.
+
+\subsection{filter\_manager.dart}
+
+En este archivo se implementa la clase \textbf{FilterManager} que se encarga de gestionar los filtros aplicados a los credenciales del usuario. Esta clase permite agregar filtros y aplicarlos a los credenciales del usuario introducidas.
+
+\subsection{email\_filter\_screen.dart}
+
+Dentro de este archivo se crea la pantalla que será mostrada al usuario. En este caso, se trata de una pantalla que permite al usuario introducir su correo electrónico y contraseña, así como seleccionar los filtros que desea aplicar a su correo electrónico. Para ello, se utilizan varios widgets de Flutter, como \textbf{TextField}, \textbf{CheckboxListTile} y \textbf{ElevatedButton}.
+
+La pantalla se divide en varias secciones, cada una de las cuales se encarga de mostrar un elemento diferente.
+
+\begin{itemize}
+    \item \textbf{TextField}: se utiliza para que el usuario introduzca su correo electrónico y contraseña.
+    \item \textbf{CheckboxListTile}: se utiliza para mostrar los filtros disponibles y permitir al usuario seleccionar los que desea aplicar.
+    \item \textbf{ElevatedButton}: se utiliza para autenticar al usuario y aplicar los filtros seleccionados.
+    \item \textbf{SnackBar}: se utiliza para mostrar un mensaje al usuario informando si los filtros han pasado correctamente o si ha habido algún problema con alguno de ellos.
+\end{itemize}
+
+\newpage
+
+\section{Ejercicio 3.2}
+Este ejercicio se presenta como opcional para la realización de la práctica 2. Se pide investigar cómo conectarse a la API de Hugging Face para poder hacer uso de ciertos LLMs. Hugging Face se trata de una web que actúa como repositorio de miles de modelos de Inteligencia Artificial.
+Para esta tarea, se require implementar una arquitectura basada en el patrón Strategy. El ejercicio se ha organizado en varios archivos con su correspondiente funcionalidad.
+
+\subsection{language\_model\_strategy.dart}
+En este archivo se define una interfaz abstracta donde se implementan dos elementos fundamentales:
+
+\begin{itemize}
+    \item modelName: nombre del modelo en Hugging Face
+    \item generateResponse(): método que genera una respuesta a partir del texto.
+\end{itemize}
+
+\subsection{gpt2\_strategy.dart}
+En este archivo se realiza una implementación de la interfaz anterior. En este se utiliza el modelo \href{https://huggingface.co/openai-community/gpt2}{\textbf{gpt2}} de Hugging Face. El modo de funcionamiento de esta clase es la siguiente:
+
+\begin{itemize}
+    \item Se guarda una referencia a la clase HuggingFaceAPI, encargada de realizar la petición.
+    \item Se define que el modelo a utilizar será \textbf{gpt2}.
+    \item En el metodo \textbf{generateResponse()} se envía la petición mediante la API de Hugging Face junto con modelo seleccionado y el mensaje.
+\end{itemize}
+
+\subsection{gpt3\_strategy.dart}
+
+En este archivo se realiza la segunda implementación de la interfaz.
+La intención original fue la de utilizar el modelo \textbf{gpt3}, pero este no se encuentra accesible en la API de Hugging Face. Por lo que la siguiente idea fue la de usar un modelo similar, el \href{https://huggingface.co/EleutherAI/gpt-neo-2.7B}{\textbf{EleutherAI/gpt-neo-2.7B}}.
+A la hora de hacer uso del mismo encontramos que el tamaño de este modelo era demasiado grande, tal y como se muestra en la figura \ref{fig:3-2-gpt3}. Por lo que finalmente se optó por el modelo \href{https://huggingface.co/distilbert/distilgpt2}{\textbf{distilbert/distilgpt2}}.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-2-gpt3.png}
+    \caption{Problema de tamaño con el modelo \textbf{EleutherAI/gpt-neo-2.7B}}
+    \label{fig:3-2-gpt3}
+\end{figure}
+
+El modo de funcionamiento de esta clase es similar al de \textbf{gpt2\_strategy.dart}, pero con el modelo \textbf{distilbert/distilgpt2}.
+
+\subsection{hugging\_face\_api.dart}
+
+Esta clase es la encargada de conectarse a la API de Hugging Face y enviar la solicitud deseada. Posteriormente, se recibirá la respuesta generada por el modelo elegido. Entrando más en detalle en el funcionamiento del \textbf{sendRequest()} tenemos varios pasos a seguir:
+
+\begin{itemize}
+    \item Se definen las dos variables necesarias para hacer la solicitud: el token y la URL. Estas variables se encuentran en el archivo \textbf{secrets.dart}, el cual comentaremos más adelante.
+    \item Creación de la URL a utilizar mediante la URL principal y el nombre del modelo seleccionado.
+    \item Se añade el token de autenticación y se especifica que la respuesta enviada será de tipo JSON.
+    \item Se define la petición y envío de la solicitud POST.
+    \item Se procesa la respuesta obtenida
+\end{itemize}
+
+Esta clase trabaja con el tipo de datos \textbf{Future}, lo que significa que la respuesta no se obtiene de forma inmediata, sino que se espera a que la petición se complete. Por lo que el método \textbf{sendRequest()} devuelve un \textbf{Future<String>}.
+
+También hace uso de la librería \textbf{http}, que es la encargada de realizar las peticiones HTTP. Esta librería se encuentra especificada en el archivo \textbf{pubspec.yaml}, con una versión \textbf{http: \^{}1.3.0}.
+
+\subsection{home\_screen.dart}
+
+Esta clase define la interfaz visual que dispondrá el programa y que utilizará el usuario. En esta se definen varios elementos como el título, cuadros de texto, botones, menús desplegables.... La clase permite elegir el tipo de modelo a aplicar en la solicitud. Así como escribir el mensaje deseado en el cuadro de texto correspondiente. Por último, con el botón \textbf{Send Message}se llama a \textbf{generateResponse()}, que es el encargado de procesar la solicitud y obtener la respuesta, la cual se muestra en un cuadro de texto independiente.
+
+Esta pantalla se puede observar en la figura \ref{fig:3-2-home-screen}.
+En la figura \ref{fig:3-2-home-screen-loading} se puede observar el funcionamiento de la aplicación mientras se está procesando la solicitud. En este caso, se muestra un círculo de carga que indica que la respuesta está siendo generada.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-2-home-screen.png}
+    \caption{Pantalla de la aplicación Email Filter App en Flutter}
+    \label{fig:3-2-home-screen}
+\end{figure}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[height=0.8\textwidth]{images/3-2-home-screen-loading.png}
+    \caption{Pantalla de la aplicación Email Filter App en Flutter}
+    \label{fig:3-2-home-screen-loading}
+\end{figure}
+
+\subsection{secrets.dart}
+
+En este archivo se definen las dos variables necesarias para realizar peticiones a la API. Se declaran el token de acceso y la URL base:
+
+\begin{itemize}
+    \item \textbf{huggingFaceToken}: token de autenticación para acceder a la API.
+    \item \textbf{huggingFaceModel}: URL base de la API.
+\end{itemize}
+
+Debido a la confidentialidad de estos datos, no se han incluido en el repositorio. En su lugar, se ha creado un archivo \textbf{secrets\_template.dart} que contiene la misma estructura que el archivo \textbf{secrets.dart}, pero sin los datos reales. Este archivo sirve como plantilla para que cada usuario pueda crear su propio archivo \textbf{secrets.dart} con sus propios datos.
+
+\subsection{response\_display.dart}
+
+Este archivo define un widget encargado de mostrar la respuesta generada por el modelo seleccionado en la solicitud enviada a la API. Para ello se utiliza el widget \textbf{build} al cual se le aplica decoración para que se vea bien visualmente y se definen las secciones de texto donde aparecerá la respuesta generada.
+
+\subsection{main.dart}
+
+Este archivo es el punto principal de ejecución de la app. Define el widget raíz, donde se configura la estructura y se carga el HomeScreen como pantalla principal.
+
+\end{document}
