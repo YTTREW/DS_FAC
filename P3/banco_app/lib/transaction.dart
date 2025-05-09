@@ -7,7 +7,7 @@ abstract class Transaction{
   // Constructor de la clase
   Transaction(this.transactionId, this.amount){
       if (amount <= 0) {
-        throw ArgumentError('El importe debe ser positivo.');
+        throw ArgumentError('La cantidad debe ser positivo.');
       }
   }
 
