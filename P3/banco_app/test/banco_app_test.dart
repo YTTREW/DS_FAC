@@ -27,24 +27,25 @@ void main() {
   group('Transaction', () {
     test('DepositTransaction.apply aumenta el saldo correctamente', () {
       final account = Account('T1');
-      final tx = DepositTransaction('TX1', 100.0);
-      tx.apply(account);
+      final tr1 = DepositTransaction('TR1', 100.0);
+      tr1.apply(account);
       expect(account.saldoCuenta, 100.0);
     });
 
     test('WithdrawalTransaction.apply lanza StateError cuando no hay fondos suficientes', () {
       final account = Account('T2');
-      final tx = WithdrawalTransaction('TX2', 50.0);
-      expect(() => tx.apply(account), throwsStateError);
+      final tr2 = WithdrawalTransaction('TR2', 50.0);
+      expect(() => tr2.apply(account), throwsStateError);
     });
 
     test('TransferTransaction.apply mueve fondos entre cuentas de forma correcta', () {
-      final from = Account('T3A')..deposit(200);
-      final to = Account('T3B');
-      final tx = TransferTransaction('TX3', 150.0, to);
-      tx.apply(from);
-      expect(from.saldoCuenta, 50.0);
-      expect(to.saldoCuenta, 150.0);
+      final cuentaOrigen = Account('T3');
+      cuentaOrigen.deposit(200);
+      final cuentaDestino = Account('Destino');
+      final tr = TransferTransaction('TR3', 150.0, cuentaDestino);
+      tr.apply(cuentaOrigen);
+      expect(cuentaOrigen.saldoCuenta, 50.0);
+      expect(cuentaDestino.saldoCuenta, 150.0);
     });
   });
 
@@ -91,10 +92,10 @@ void main() {
       bank.deposit(acc.accountId, 100);
       bank.withdraw(acc.accountId, 50);
 
-      final txs = bank.listTransactions();
+      final lista_transacciones = bank.listTransactions();
 
-      expect(txs.length, 2);
-      expect(txs[0].transactionId, isNot(equals(txs[1].transactionId)));
+      expect(lista_transacciones.length, 2);
+      expect(lista_transacciones[0].transactionId, isNot(equals(lista_transacciones[1].transactionId)));
     });
   });
 }
