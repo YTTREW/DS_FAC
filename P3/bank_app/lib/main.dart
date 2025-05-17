@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
+import 'package:bank_app/providers/theme_provider.dart';
 import 'package:bank_app/services/bank_service.dart';
 import 'package:bank_app/screens/home_screen.dart';
 
@@ -12,18 +13,23 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Provider<BankService>(
-      create: (_) => BankService(),
-      child: MaterialApp(
-        title: 'Bank App',
-        theme: ThemeData(
-          primarySwatch: Colors.blue,
-          visualDensity: VisualDensity.adaptivePlatformDensity,
-        ),
-        home: Consumer<BankService>(
-          builder:
-              (context, bankService, _) => HomeScreen(bankService: bankService),
-        ),
+    return MultiProvider(
+      providers: [
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
+        Provider<BankService>(create: (_) => BankService()),
+      ],
+      child: Consumer<ThemeProvider>(
+        builder: (context, themeProvider, child) {
+          return MaterialApp(
+            title: 'Bank App',
+            theme: themeProvider.getTheme(),
+            home: Consumer<BankService>(
+              builder:
+                  (context, bankService, _) =>
+                      HomeScreen(bankService: bankService),
+            ),
+          );
+        },
       ),
     );
   }

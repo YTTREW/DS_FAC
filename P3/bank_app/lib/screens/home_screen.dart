@@ -1,8 +1,10 @@
+import 'package:bank_app/providers/theme_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:bank_app/services/bank_service.dart';
 import 'package:bank_app/models/account.dart';
 import 'package:bank_app/screens/account_detail_screen.dart';
 import 'package:bank_app/widgets/account_card.dart';
+import 'package:provider/provider.dart';
 
 class HomeScreen extends StatefulWidget {
   final BankService bankService;
@@ -37,8 +39,24 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     return Scaffold(
-      appBar: AppBar(title: const Text('Bank App')),
+      appBar: AppBar(
+        title: const Text('Bank App'),
+        actions: [
+          // Botón para cambiar el tema
+          IconButton(
+            icon: Icon(
+              themeProvider.isDarkMode ? Icons.light_mode : Icons.dark_mode,
+            ),
+            tooltip: 'Cambiar tema',
+            onPressed: () {
+              themeProvider.toggleTheme();
+            },
+          ),
+        ],
+      ),
       body:
           accounts.isEmpty
               ? Center(child: Text('No tienes cuentas. Crea una para empezar.'))
