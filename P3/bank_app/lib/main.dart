@@ -1,26 +1,30 @@
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 import 'package:bank_app/services/bank_service.dart';
 import 'package:bank_app/screens/home_screen.dart';
 
 void main() {
-  runApp(BankApp());
+  runApp(const MyApp());
 }
 
-class BankApp extends StatelessWidget {
-  // Instancia compartida del servicio bancario para toda la app
-  final BankService bankService = BankService();
-
-  BankApp({super.key});
+class MyApp extends StatelessWidget {
+  const MyApp({super.key});
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      title: 'Bank App',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-        visualDensity: VisualDensity.adaptivePlatformDensity,
+    return Provider<BankService>(
+      create: (_) => BankService(),
+      child: MaterialApp(
+        title: 'Bank App',
+        theme: ThemeData(
+          primarySwatch: Colors.blue,
+          visualDensity: VisualDensity.adaptivePlatformDensity,
+        ),
+        home: Consumer<BankService>(
+          builder:
+              (context, bankService, _) => HomeScreen(bankService: bankService),
+        ),
       ),
-      home: HomeScreen(bankService: bankService),
     );
   }
 }
