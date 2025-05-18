@@ -46,7 +46,7 @@
 \newpage
 
 
-\section*{Introducción}
+\section{Introducción}
 \setlength{\parindent}{0pt}
 Esta práctica tiene como objetivo consolidar los conocimientos adquiridos en clase sobre el diseño orientado a objetos, pruebas de software y desarrollo en Dart. Para ello, se propone implementar un sistema bancario. Para su desarrollo se parte de un diagrama UML proporcionado, que sirve como base para diseñar e implementar las clases que actuen como cuentas bancarias y transacciones.
 
@@ -56,27 +56,27 @@ A parte del desarrollo de esta funcionalidad, también se busca realizar un aná
 
 Finalmente, se ha creado una interfaz gráfica en Flutter que permite interactuar con el sistema bancario. Esta interfaz proporciona una forma sencilla y amigable de realizar operaciones bancarias, como crear cuentas, realizar depósitos, retiradas y transferencias. La interfaz está diseñada para ser intuitiva y fácil de usar, lo que facilita la interacción del usuario con el sistema.
 
-\section*{Ejercicio 3.1}
+\section{Ejercicio 3.1}
 Para la implementación del sistema bancario, se han desarrollado las clases especificadas en el enunciado de la práctica. A continuación, se detalla la funcionalidad de cada una de ellas:
 
-\subsection*{Clase Transaction}
+\subsection{Clase Transaction}
 Esta clase es abstracta y define el contrato común para todas las operaciones sobre cuentas bancarias. Contiene los atributos \texttt{transactionId} (identificador para cada cuenta) y \texttt{amount} (importe de cada operación). Además, incluye la definición del método abstracto \texttt{apply(Account account)}, que debe ser implementado por cada subclase para definir la lógica de cada tipo de operación.
 
-\subsection*{Clase DepositTransaction}
+\subsection{Clase DepositTransaction}
 Es una subclase concreta de la clase \texttt{Transaction}. Su objetivo es incrementar el saldo de la cuenta destino al aplicar una transacción. Implementa el método \texttt{apply(Account account)} realizando una llamada al método \texttt{deposit} de la cuenta.
 
-\subsection*{Clase WithdrawalTransaction}
+\subsection{Clase WithdrawalTransaction}
 Es otra subclase concreta de la clase \texttt{Transaction}. Su objetivo es retirar una cantidad de dinero de la cuenta, siempre que haya un saldo suficiente. Implementa el método \texttt{apply(Account account)}, realizando una llamada al método \texttt{withdraw}, donde se valida que el importe no supere el saldo total disponible.
 
-\subsection*{Clase TransferTransaction}
+\subsection{Clase TransferTransaction}
 Es otra subclase concreta de la clase \texttt{Transaction}. Permite mover dinero entre dos cuentas. Implementa el método \texttt{apply(Account account)}, donde se realiza una retirada de la cuenta origen seguido de un depósito en la cuenta destino. Para realizar esto, se hace una llamada al método \texttt{deposit} y \texttt{withdraw}.
 
-\subsection*{Clase Account}
+\subsection{Clase Account}
 
 Es una clase que representa una cuenta bancaria. Contiene un identificador único (\texttt{accountId}) y un atributo para eñ saldo \texttt{\_saldoCuenta}. Se implementan los métodos \texttt{deposit(double amount)} y \texttt{withdraw(double amount)}. El primero se encarga de despositar dinero en una cuenta y aumentar su saldo. El segundo método se encarga de retirar dinero de la cuenta, validando que la cantidad a retirar no sea mayor que el saldo de la cuenta.
 
 
-\subsection*{Clase BankService}
+\subsection{Clase BankService}
 Esta clase actúa como fachada del sistema. Su principal función es simplificar el acceso a las operaciones bancarias, como la creación de cuentas, la realización de depósitos, retiradas y transferencias. A parte de esto, también se encarga de:
 \begin{itemize}
     \item Generar identificadores únicos para las cuentas y transacciones.
@@ -103,7 +103,7 @@ En cuanto a los métodos implementados, tenemos los siguientes:
 \end{itemize}
 
 
-\section*{Ejercicio 3.2}
+\section{Ejercicio 3.2}
 Respecto a los test, hemos implementado todos los test que se piden para la práctica, para ello hemos realizado tres groups distintos; uno Account, otro Transaction y otro BankService y en cada uno hemos implementado los test su respectivo grupo:
 \begin{itemize}
     \item Group Account.
@@ -130,11 +130,11 @@ Respecto a los test, hemos implementado todos los test que se piden para la prá
           \end{itemize}
 \end{itemize}
 
-\section*{Interfaz gráfica}
+\section{Interfaz gráfica}
 
 La interfaz gráfica ha sido desarrollada utilizando Flutter, un framework de desarrollo de aplicaciones móviles. La interfaz permite a los usuarios interactuar con el sistema bancario de manera sencilla y amigable. A continuación, se describen las principales características de la interfaz:
 
-\subsection*{Pantalla de inicio}
+\subsection{Pantalla de inicio}
 
 La pantalla de inicio muestra las cuentas bancarias registradas en el sistema. Cada cuenta se presenta con su número de cuenta y saldo actual. Además, se proporciona un botón para crear una nueva cuenta.
 
@@ -159,7 +159,7 @@ En las figuras \ref{fig:pantalla-inicio} y \ref{fig:pantalla-inicio-oscuro} se m
     \end{minipage}
 \end{figure}
 
-\subsection*{Detalles de cuenta}
+\subsection{Detalles de cuenta}
 
 Al seleccionar una cuenta de la lista, se accede a la pantalla de detalles de la cuenta. En esta pantalla, se muestra información detallada sobre la cuenta seleccionada, incluyendo su número de cuenta, el saldo actual y un historial de transacciones realizadas.
 
@@ -203,16 +203,33 @@ Por otro lado, en la figura \ref{fig:detalles-cuenta-retiro} se puede ver como r
     \end{minipage}
 \end{figure}
 
-\subsection*{Test de la interfaz gráfica}
+\subsection{Test de la interfaz gráfica}
 
 Para garantizar el correcto funcionamiento de las pantallas y los widgets de la interfaz gráfica, se han implementado pruebas unitarias utilizando el paquete \texttt{flutter\_test}. Estas pruebas verifican que los widgets se construyan correctamente y que las interacciones del usuario generen los resultados esperados.
 
-En el archivo \textit{home\_screen\_test.dart} se encuentran las pruebas relacionadas con la pantalla de inicio. Estas pruebas verifican que el texto de la pantalla de inicio se muestre correctamente y que el botón de crear cuenta se encuentre en la pantalla.
-
 En el archivo \textit{account\_card\_test.dart} se encuentran las pruebas relacionadas con la tarjeta de cuenta. En particular, una de las pruebas principales verifica que el widget \texttt{AccountCard} muestre correctamente la información de la cuenta. Esta prueba crea una cuenta de prueba con ID 'TEST123' y un saldo de 150.0. Después, comprueba que el widget muestre correctamente el ID de la cuenta como ``Cuenta: TEST123'' y el saldo como ``Saldo: \$150.00''. Además, se comprueba que al pulsar sobre la tarjeta se active correctamente el callback \texttt{onTap}, lo que permitiría la navegación a la pantalla de detalles de la cuenta en la aplicación real.
 
+\section{Repositorio}
 
+El código fuente de la práctica, incluyendo la implementación del sistema bancario y la interfaz gráfica, se encuentra disponible en el siguiente repositorio de GitHub:
 
+\url{https://github.com/YTTREW/DS_FAC/tree/main}
 
+\section{Cómo probar los test}
+
+Para probar los test de la práctica, basta con clonar el repositorio y abrirlo en un editor de código compatible con Dart y Flutter, como Visual Studio Code o Android Studio. En la terminal, navega hasta la carpeta del proyecto y ejecuta el siguiente comando:
+
+\begin{verbatim}
+    flutter test
+\end{verbatim}
+
+El resultado debe mostrar un resumen de los test ejecutados, indicando si han pasado o fallado. Si todos los test pasan, significa que el sistema bancario y la interfaz gráfica funcionan correctamente. En la imagen \ref{fig:resultado-test} se puede ver un ejemplo de la salida de los test.
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=0.8\textwidth]{images/resultado-test.png}
+    \caption{Resultado de los test}
+    \label{fig:resultado-test}
+\end{figure}
 
 \end{document}
