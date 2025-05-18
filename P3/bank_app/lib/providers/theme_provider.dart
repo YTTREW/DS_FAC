@@ -32,7 +32,7 @@ class ThemeProvider extends ChangeNotifier {
   ThemeData getTheme() {
     return _isDarkMode
         ? ThemeData.dark().copyWith(
-          primaryColor: Colors.blueGrey[800],
+          primaryColor: Colors.deepOrangeAccent,
           colorScheme: ColorScheme.dark(
             primary: Colors.orangeAccent,
             secondary: Colors.tealAccent,

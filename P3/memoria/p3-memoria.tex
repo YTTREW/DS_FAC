@@ -1,0 +1,218 @@
+\documentclass[12pt]{article}
+
+\usepackage[spanish]{babel}
+\usepackage{graphicx}
+\usepackage[letterpaper,top=2cm,bottom=2cm,left=3cm,right=3cm,marginparwidth=1.75cm]{geometry}
+\usepackage{enumitem}
+
+% Enlaces
+\usepackage{hyperref}
+
+% Evitar que se corten las palabras al final de línea
+\usepackage[none]{hyphenat}
+
+% Paquete para el manejo de imágenes
+\usepackage{float}
+
+% Establecer el estilo de los ítems en todo el documento
+\setlist[itemize,1]{label=\textbullet}
+
+\begin{document}
+
+\begin{titlepage}
+
+    \centering
+    \vspace*{1cm}
+    \vspace{0.5cm}
+    {\Huge\bfseries Desarrollo de Software - Práctica 3\par}
+    \vspace{1.5cm}
+    \includegraphics[width=0.9\textwidth]{images/portada.png}
+    \vspace{1.5cm}
+    \par % Nuevo párrafo
+    \vspace{1cm}
+    {\Large Fernando Cuesta Bueno
+        \\
+        Carlos Fernández Arrabal
+        \\
+        Antonio Manuel García Mesa
+        \\
+        18/05/2025\par}
+
+\end{titlepage}
+
+% Índice
+\tableofcontents
+
+\newpage
+
+
+\section*{Introducción}
+\setlength{\parindent}{0pt}
+Esta práctica tiene como objetivo consolidar los conocimientos adquiridos en clase sobre el diseño orientado a objetos, pruebas de software y desarrollo en Dart. Para ello, se propone implementar un sistema bancario. Para su desarrollo se parte de un diagrama UML proporcionado, que sirve como base para diseñar e implementar las clases que actuen como cuentas bancarias y transacciones.
+
+\vspace{0.2cm}
+A parte del desarrollo de esta funcionalidad, también se busca realizar un análisis de las pruebas necesarias para garantizar el buen funcionamiento del sistema. Para ello, se pide implementar un conjunto de pruebas unitarias organizadas en tres grupos: \textit{Account}, \textit{Transaction} y \textit{BankService}. Estas pruebas permiten verificar que las operaciones básicas del sistema funcionan correctamente y detectar errores automáticamente.
+\vspace{0.2cm}
+
+Finalmente, se ha creado una interfaz gráfica en Flutter que permite interactuar con el sistema bancario. Esta interfaz proporciona una forma sencilla y amigable de realizar operaciones bancarias, como crear cuentas, realizar depósitos, retiradas y transferencias. La interfaz está diseñada para ser intuitiva y fácil de usar, lo que facilita la interacción del usuario con el sistema.
+
+\section*{Ejercicio 3.1}
+Para la implementación del sistema bancario, se han desarrollado las clases especificadas en el enunciado de la práctica. A continuación, se detalla la funcionalidad de cada una de ellas:
+
+\subsection*{Clase Transaction}
+Esta clase es abstracta y define el contrato común para todas las operaciones sobre cuentas bancarias. Contiene los atributos \texttt{transactionId} (identificador para cada cuenta) y \texttt{amount} (importe de cada operación). Además, incluye la definición del método abstracto \texttt{apply(Account account)}, que debe ser implementado por cada subclase para definir la lógica de cada tipo de operación.
+
+\subsection*{Clase DepositTransaction}
+Es una subclase concreta de la clase \texttt{Transaction}. Su objetivo es incrementar el saldo de la cuenta destino al aplicar una transacción. Implementa el método \texttt{apply(Account account)} realizando una llamada al método \texttt{deposit} de la cuenta.
+
+\subsection*{Clase WithdrawalTransaction}
+Es otra subclase concreta de la clase \texttt{Transaction}. Su objetivo es retirar una cantidad de dinero de la cuenta, siempre que haya un saldo suficiente. Implementa el método \texttt{apply(Account account)}, realizando una llamada al método \texttt{withdraw}, donde se valida que el importe no supere el saldo total disponible.
+
+\subsection*{Clase TransferTransaction}
+Es otra subclase concreta de la clase \texttt{Transaction}. Permite mover dinero entre dos cuentas. Implementa el método \texttt{apply(Account account)}, donde se realiza una retirada de la cuenta origen seguido de un depósito en la cuenta destino. Para realizar esto, se hace una llamada al método \texttt{deposit} y \texttt{withdraw}.
+
+\subsection*{Clase Account}
+
+Es una clase que representa una cuenta bancaria. Contiene un identificador único (\texttt{accountId}) y un atributo para eñ saldo \texttt{\_saldoCuenta}. Se implementan los métodos \texttt{deposit(double amount)} y \texttt{withdraw(double amount)}. El primero se encarga de despositar dinero en una cuenta y aumentar su saldo. El segundo método se encarga de retirar dinero de la cuenta, validando que la cantidad a retirar no sea mayor que el saldo de la cuenta.
+
+
+\subsection*{Clase BankService}
+Esta clase actúa como fachada del sistema. Su principal función es simplificar el acceso a las operaciones bancarias, como la creación de cuentas, la realización de depósitos, retiradas y transferencias. A parte de esto, también se encarga de:
+\begin{itemize}
+    \item Generar identificadores únicos para las cuentas y transacciones.
+    \item Almacenar las cuentas activas en un mapa.
+    \item Delegar la ejecución de transacciones según el tipo solicitado (depósito, retirada o transferencia).
+    \item Implementar métodos públicos para listar cuentas, realizar operaciones y consultar transacciones de una cuenta.
+\end{itemize}
+
+En cuanto a los métodos implementados, tenemos los siguientes:
+\begin{itemize}
+    \item \texttt{Account createAccount()}: Genera un nuevo número de cuenta único, crea una instancia de tipo \texttt{Account} con ese número y la guarda en un map. A modo de resumen, es el método encargado de registrar nuevas cuentas bancarias.
+
+    \item \texttt{void deposit(String accountNumber, double amount)}: Realiza un depósito de dinero en la cuenta indicada. El método obtiene la cuenta, crea una instancia de la clase \texttt{DepositTransaction}, llama al método apply y realiza la transacción y la guarda en el historial de transacciones.
+
+    \item \texttt{void withdraw(String accountNumber, double amount)}: Realiza una retirada de dinero sobre una cuenta bancaria. Al igual que el método anterior, se crea una instancia de la clase \texttt{WithdrawalTransaction}, llama al método apply y realiza la transacción si hay saldo suficiente y la guarda en el historial de transacciones.
+
+    \item \texttt{void transfer(String fromAccount, String toAccount, double amount)}: Permite transferir dinero de una cuenta a otra. Crea una instancia de \texttt{TransferTransaction}, se obtienen los IDs de ambas cuentas y se aplica la transacción sobre la cuenta origen y la almacena en el historial.
+
+    \item \texttt{Account \_getAccount(String accountNumber)} (privado): Método auxiliar para obtener una cuenta a partir de su identificador. Si no existe, lanza un error. Es utilizado para validar que las operaciones se apliquen sobre cuentas existentes.
+
+    \item \texttt{List<Account> listAccounts()}: Devuelve una lista de todas las cuentas registradas en el sistema bancario.
+
+    \item \texttt{List<Transaction> listTransactions()}: Devuelve una lista de todas las transacciones realizadas en el sistema bancario.
+\end{itemize}
+
+
+\section*{Ejercicio 3.2}
+Respecto a los test, hemos implementado todos los test que se piden para la práctica, para ello hemos realizado tres groups distintos; uno Account, otro Transaction y otro BankService y en cada uno hemos implementado los test su respectivo grupo:
+\begin{itemize}
+    \item Group Account.
+          \begin{itemize}
+              \item Test para comprobar que el balance inicial de una cuenta debe ser cero. Para ello se comprueba que el atributo saldoCuenta sea cero.
+              \item Test para comprobar que no se puedan depositar cantidades negativas o cero. Para ello ejecuto el método deposit con una cantidad 0 y otro con una cantidad -10 para comprobar que no puede ser negativa.
+              \item Test para comprobar que no se puedan retirar cantidades negativas o cero. Para ello ejecuto el método withdraw con una cantidad 0 y otro con una cantidad -5 para comprobar que no puede ser negativa.
+          \end{itemize}
+    \item Group Transaction.
+          \begin{itemize}
+              \item Test para comprobar si DepositTransaction.apply aumenta el saldo correctamente. Para ello deposito en una cuenta 100 de saldo y compruebo que el saldoCuenta sea de 100.
+              \item Test para comprobar si WithdrawalTransaction.apply lanza StateError cuando no hay fondos suficientes. Para ello creo una cuenta con saldo 0 e intento retirarle 50.
+              \item Test para comprobar si TransferTransaction.apply mueve fondos entre cuentas de forma correcta. Para ello creo una cuenta en la que deposito 200 y luego creo otra con saldo 0 que va a ser la cuenta en la que transfiera el dinero. Una vez realizada la transacción comprueba que el saldo de la primera cuenta sea 50 y el de la segunda 150.
+          \end{itemize}
+    \item Group BankService.
+          \begin{itemize}
+              \item Test para comprobar si la lista inicial de cuentas está vacía. Para ello creo un BankService y compruebo si el método listAccounts() es true.
+              \item Test para comprobar si el método deposit aumenta el saldo de la cuenta. Para ello creo un BankService y una cuenta. Posteriormente ingreso en la cuenta a través del BankService 100 de saldo de la cuenta y compruebo si el saldo de la cuenta es de 100.
+              \item Test para comprobar si el método withdraw lanza StateError cuando el saldo es insuficiente.
+                    Para ello creo un BankService y una cuenta vacía e intento retirar de la cuenta 50 de saldo.
+              \item Test para comprobar si el método transfer mueve fondos correctamente. Para ello creo un BankService y dos accounts vacías. Una vez está todo creado deposito en la primera cuenta 200 de saldo y le transfiero 100 a la segunda. Finalmente compruebo que ambas cuentas tengan 100 de saldo.
+              \item Test para comprobar que el método transfer lanza StateError cuando los fondos son isuficientes. Para ello ello creo un BankService y dos accounts vacías e intento transferir 100 de saldo de una cuenta a otra y lanzo el throwStateError.
+              \item Test para comprobar si txId genera identificadores únicos. Para ello creo un BankService y una account y realizo en la cuenta un depósito y una retirada usando los métodos deposit y withdraw de BankService. Una vez he realizado las dos transacciones, obtengo la lista de transacciones, verifico que hay dos transacciones y compruebo que las dos id son distintas.
+          \end{itemize}
+\end{itemize}
+
+\section*{Interfaz gráfica}
+
+La interfaz gráfica ha sido desarrollada utilizando Flutter, un framework de desarrollo de aplicaciones móviles. La interfaz permite a los usuarios interactuar con el sistema bancario de manera sencilla y amigable. A continuación, se describen las principales características de la interfaz:
+
+\subsection*{Pantalla de inicio}
+
+La pantalla de inicio muestra las cuentas bancarias registradas en el sistema. Cada cuenta se presenta con su número de cuenta y saldo actual. Además, se proporciona un botón para crear una nueva cuenta.
+
+En la parte superior de la pantalla, se encuentra un botón para alternar entre el modo claro y oscuro de la aplicación. Esto permite a los usuarios personalizar la apariencia de la interfaz según sus preferencias.
+
+En las figuras \ref{fig:pantalla-inicio} y \ref{fig:pantalla-inicio-oscuro} se muestran ejemplos de la pantalla de inicio en modo claro y oscuro, respectivamente.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/pantalla-inicio.png}
+        \caption{Pantalla de inicio (modo claro)}
+        \label{fig:pantalla-inicio}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/pantalla-inicio-oscuro.png}
+        \caption{Pantalla de inicio (modo oscuro)}
+        \label{fig:pantalla-inicio-oscuro}
+    \end{minipage}
+\end{figure}
+
+\subsection*{Detalles de cuenta}
+
+Al seleccionar una cuenta de la lista, se accede a la pantalla de detalles de la cuenta. En esta pantalla, se muestra información detallada sobre la cuenta seleccionada, incluyendo su número de cuenta, el saldo actual y un historial de transacciones realizadas.
+
+Además, se proporcionan botones para realizar operaciones bancarias, como depósitos, retiradas y transferencias. Los usuarios pueden ingresar la cantidad deseada y confirmar la operación.
+
+En la figura \ref{fig:detalles-cuenta} se muestran los detalles de una cuenta y en la figura \ref{fig:detalles-cuenta-deposito} se puede ver como realizar un deposito.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/detalles-cuenta.png}
+        \caption{Detalles de cuenta}
+        \label{fig:detalles-cuenta}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/detalles-cuenta-deposito.png}
+        \caption{Detalles de cuenta (depósito)}
+        \label{fig:detalles-cuenta-deposito}
+    \end{minipage}
+\end{figure}
+
+Por otro lado, en la figura \ref{fig:detalles-cuenta-retiro} se puede ver como realizar un retiro y en la figura \ref{fig:detalles-cuenta-transferencia} se puede ver como realizar una transferencia. En este menu, tendremos una lista desplegable donde podremos seleccionar la cuenta a la que queremos transferir el dinero.
+
+\begin{figure}[H]
+    \centering
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/detalles-cuenta-retiro.png}
+        \caption{Detalles de cuenta (retiro)}
+        \label{fig:detalles-cuenta-retiro}
+    \end{minipage}
+    \hfill
+    \begin{minipage}[b]{0.48\textwidth}
+        \centering
+        \includegraphics[height=0.8\textwidth]{images/detalles-cuenta-transferencia.png}
+        \caption{Detalles de cuenta (transferencia)}
+        \label{fig:detalles-cuenta-transferencia}
+    \end{minipage}
+\end{figure}
+
+\subsection*{Test de la interfaz gráfica}
+
+Para garantizar el correcto funcionamiento de las pantallas y los widgets de la interfaz gráfica, se han implementado pruebas unitarias utilizando el paquete \texttt{flutter\_test}. Estas pruebas verifican que los widgets se construyan correctamente y que las interacciones del usuario generen los resultados esperados.
+
+En el archivo \textit{home\_screen\_test.dart} se encuentran las pruebas relacionadas con la pantalla de inicio. Estas pruebas verifican que el texto de la pantalla de inicio se muestre correctamente y que el botón de crear cuenta se encuentre en la pantalla.
+
+En el archivo \textit{account\_card\_test.dart} se encuentran las pruebas relacionadas con la tarjeta de cuenta. En particular, una de las pruebas principales verifica que el widget \texttt{AccountCard} muestre correctamente la información de la cuenta. Esta prueba crea una cuenta de prueba con ID 'TEST123' y un saldo de 150.0. Después, comprueba que el widget muestre correctamente el ID de la cuenta como ``Cuenta: TEST123'' y el saldo como ``Saldo: \$150.00''. Además, se comprueba que al pulsar sobre la tarjeta se active correctamente el callback \texttt{onTap}, lo que permitiría la navegación a la pantalla de detalles de la cuenta en la aplicación real.
+
+
+
+
+
+\end{document}
