@@ -34,7 +34,7 @@ class ThemeProvider extends ChangeNotifier {
         ? ThemeData.dark().copyWith(
           primaryColor: Colors.blueGrey[800],
           colorScheme: ColorScheme.dark(
-            primary: Colors.blueGrey[800]!,
+            primary: Colors.orangeAccent,
             secondary: Colors.tealAccent,
           ),
           appBarTheme: AppBarTheme(backgroundColor: Colors.blueGrey[900]),
@@ -45,14 +45,14 @@ class ThemeProvider extends ChangeNotifier {
           ),
         )
         : ThemeData.light().copyWith(
-          primaryColor: Colors.blue,
+          primaryColor: Colors.black,
           colorScheme: ColorScheme.light(
-            primary: Colors.blue,
+            primary: Colors.orange,
             secondary: Colors.lightBlueAccent,
           ),
-          appBarTheme: const AppBarTheme(backgroundColor: Colors.blue),
+          appBarTheme: const AppBarTheme(backgroundColor: Colors.cyan),
           floatingActionButtonTheme: const FloatingActionButtonThemeData(
-            backgroundColor: Colors.blue,
+            backgroundColor: Colors.cyan,
             foregroundColor: Colors.white,
           ),
         );
