@@ -5,12 +5,12 @@ import 'factory/suscripcion_mensual.dart';
 import 'factory/suscripcion_anual.dart';
 
 import 'strategy/estrategia_gasto.dart';
-import 'strategy/gasto_mensual.dart';
+import 'strategy/gasto_mensual_total.dart';
 import 'strategy/gasto_total.dart';
 import 'strategy/gasto_promedio.dart';
-import 'strategy/gasto_por_tipo.dart';
 import 'strategy/suscripcion_top.dart';
 import 'strategy/gasto_anual.dart';
+
 void main() {
   runApp(const MyApp());
 }
@@ -41,6 +41,7 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Suscripcion> suscripciones = [];
   bool mostrarFormulario = false;
+  bool ordenAlfabetico = false;
 
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _precioController = TextEditingController();
@@ -165,17 +166,36 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
-    final gastoMensual = calcularGasto(GastoMensualStrategy());
+    final gastoMensual = calcularGasto(GastoMensualTotalStrategy());
     final gastoAnual = calcularGasto(GastoAnualStrategy());
     final gastoTotal = calcularGasto(GastoTotalStrategy());
     final gastoPromedio = calcularGasto(GastoPromedioStrategy());
     final gastoTop = calcularGasto(TopSuscripcionStrategy());
     final estadisticas = gastoPorSuscripcion();
 
+    List<Suscripcion> listaOrdenada = suscripciones.toList();
+
+    if (ordenAlfabetico) {
+      listaOrdenada.sort((a, b) => a.nombre.toLowerCase().compareTo(b.nombre.toLowerCase()));
+    } else {
+      listaOrdenada = listaOrdenada.reversed.toList();
+    }
+
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
+        actions: [
+          IconButton(
+            icon: Icon(ordenAlfabetico ? Icons.sort_by_alpha : Icons.schedule),
+            tooltip: ordenAlfabetico ? 'Orden alfabético' : 'Últimas agregadas',
+            onPressed: () {
+              setState(() {
+                ordenAlfabetico = !ordenAlfabetico;
+              });
+            },
+          ),
+        ],
       ),
       body: Padding(
         padding: const EdgeInsets.all(12.0),
@@ -233,21 +253,40 @@ class _MyHomePageState extends State<MyHomePage> {
                 ],
               ),
             const SizedBox(height: 8),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Orden: ${ordenAlfabetico ? 'Alfabético' : 'Últimas agregadas'}',
+                  style: const TextStyle(fontWeight: FontWeight.bold),
+                ),
+                IconButton(
+                  icon: Icon(ordenAlfabetico ? Icons.sort_by_alpha : Icons.schedule),
+                  tooltip: 'Cambiar orden',
+                  onPressed: () {
+                    setState(() {
+                      ordenAlfabetico = !ordenAlfabetico;
+                    });
+                  },
+                ),
+              ],
+            ),
+            const SizedBox(height: 4),
             Expanded(
               child: ListView.builder(
-                itemCount: suscripciones.length,
+                itemCount: listaOrdenada.length,
                 itemBuilder: (context, index) {
-                  final s = suscripciones[index];
+                  final s = listaOrdenada[index];
                   return ListTile(
                     title: Text(s.nombre),
                     subtitle: Text("${s.tipo} - \$${s.precio.toStringAsFixed(2)}"),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
                         if (value == 'editar') {
-                          editarSuscripcion(index);
+                          editarSuscripcion(suscripciones.indexOf(s));
                         } else if (value == 'eliminar') {
                           setState(() {
-                            suscripciones.removeAt(index);
+                            suscripciones.remove(s);
                           });
                         }
                       },

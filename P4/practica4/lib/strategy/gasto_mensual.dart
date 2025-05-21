@@ -5,7 +5,7 @@ class GastoMensualStrategy implements EstrategiaGasto {
   @override
   double calcular(List<Suscripcion> lista) {
     double total = 0.0;
-    for (var s in lista) {
+    for (final s in lista) {
       if (s.tipo == 'mensual') {
         total += s.precio;
       }
