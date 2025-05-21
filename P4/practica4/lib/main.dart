@@ -1,21 +1,30 @@
 import 'package:flutter/material.dart';
 import 'factory/suscripcion.dart';
 import 'factory/suscripcion_factory.dart';
+import 'factory/suscripcion_mensual.dart';
+import 'factory/suscripcion_anual.dart';
+
 import 'strategy/estrategia_gasto.dart';
 import 'strategy/gasto_mensual.dart';
 import 'strategy/gasto_total.dart';
-
+import 'strategy/gasto_promedio.dart';
+import 'strategy/gasto_por_tipo.dart';
+import 'strategy/suscripcion_top.dart';
+import 'strategy/gasto_anual.dart';
 void main() {
   runApp(const MyApp());
 }
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: 'Gestor de Suscripciones',
-      theme: ThemeData(colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple)),
+      theme: ThemeData(
+        colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+      ),
       home: const MyHomePage(title: 'Mis Suscripciones'),
     );
   }
@@ -32,8 +41,10 @@ class MyHomePage extends StatefulWidget {
 class _MyHomePageState extends State<MyHomePage> {
   List<Suscripcion> suscripciones = [];
   bool mostrarFormulario = false;
+
   final TextEditingController _nombreController = TextEditingController();
   final TextEditingController _precioController = TextEditingController();
+  String _tipoSeleccionado = 'mensual';
 
   void agregarDesdeFormulario() {
     final nombre = _nombreController.text.trim();
@@ -43,13 +54,14 @@ class _MyHomePageState extends State<MyHomePage> {
       final nueva = SuscripcionFactory.desdeFormulario(
         nombre: nombre,
         precio: precio,
-        tipo: 'mensual',
+        tipo: _tipoSeleccionado,
       );
       setState(() {
         suscripciones.add(nueva);
         mostrarFormulario = false;
         _nombreController.clear();
         _precioController.clear();
+        _tipoSeleccionado = 'mensual';
       });
     }
   }
@@ -60,6 +72,7 @@ class _MyHomePageState extends State<MyHomePage> {
     TextEditingController(text: suscripcion.nombre);
     final TextEditingController editarPrecioController =
     TextEditingController(text: suscripcion.precio.toString());
+    String tipoEditado = suscripcion.tipo;
 
     showDialog(
       context: context,
@@ -78,6 +91,21 @@ class _MyHomePageState extends State<MyHomePage> {
               keyboardType: TextInputType.numberWithOptions(decimal: true),
               decoration: const InputDecoration(labelText: 'Precio'),
             ),
+            const SizedBox(height: 8),
+            DropdownButtonFormField<String>(
+              value: tipoEditado,
+              items: const [
+                DropdownMenuItem(value: 'mensual', child: Text('Mensual')),
+                DropdownMenuItem(value: 'anual', child: Text('Anual')),
+              ],
+              onChanged: (valor) {
+                if (valor != null) tipoEditado = valor;
+              },
+              decoration: const InputDecoration(
+                labelText: 'Tipo',
+                border: OutlineInputBorder(),
+              ),
+            ),
           ],
         ),
         actions: [
@@ -88,17 +116,26 @@ class _MyHomePageState extends State<MyHomePage> {
           ElevatedButton(
             onPressed: () {
               final nuevoNombre = editarNombreController.text.trim();
-              final nuevoPrecio = double.tryParse(editarPrecioController.text.trim()) ?? 0;
+              final nuevoPrecio =
+                  double.tryParse(editarPrecioController.text.trim()) ?? 0;
 
               if (nuevoNombre.isNotEmpty && nuevoPrecio > 0) {
                 setState(() {
-                  suscripciones[index] = Suscripcion(
-                    id: suscripcion.id,
-                    nombre: nuevoNombre,
-                    precio: nuevoPrecio,
-                    tipo: suscripcion.tipo,
-                    fechaInicio: suscripcion.fechaInicio,
-                  );
+                  if (tipoEditado == 'mensual') {
+                    suscripciones[index] = SuscripcionMensual(
+                      id: suscripcion.id,
+                      nombre: nuevoNombre,
+                      precio: nuevoPrecio,
+                      fechaInicio: suscripcion.fechaInicio,
+                    );
+                  } else {
+                    suscripciones[index] = SuscripcionAnual(
+                      id: suscripcion.id,
+                      nombre: nuevoNombre,
+                      precio: nuevoPrecio,
+                      fechaInicio: suscripcion.fechaInicio,
+                    );
+                  }
                 });
                 Navigator.pop(context);
               }
@@ -115,9 +152,13 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   Map<String, double> gastoPorSuscripcion() {
-    Map<String, double> mapa = {};
+    final Map<String, double> mapa = {};
     for (var s in suscripciones) {
-      mapa[s.nombre] = (mapa[s.nombre] ?? 0) + s.precio;
+      if (mapa.containsKey(s.nombre)) {
+        mapa[s.nombre] = mapa[s.nombre]! + s.precio;
+      } else {
+        mapa[s.nombre] = s.precio;
+      }
     }
     return mapa;
   }
@@ -125,7 +166,10 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final gastoMensual = calcularGasto(GastoMensualStrategy());
+    final gastoAnual = calcularGasto(GastoAnualStrategy());
     final gastoTotal = calcularGasto(GastoTotalStrategy());
+    final gastoPromedio = calcularGasto(GastoPromedioStrategy());
+    final gastoTop = calcularGasto(TopSuscripcionStrategy());
     final estadisticas = gastoPorSuscripcion();
 
     return Scaffold(
@@ -137,7 +181,11 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Text("Gasto mensual total: ${gastoMensual.toStringAsFixed(2)}\€"),
+            Text("Gasto mensual total: \$${gastoMensual.toStringAsFixed(2)}"),
+            Text("Gasto anual total: \$${gastoAnual.toStringAsFixed(2)}"),
+            Text("Gasto total: \$${gastoTotal.toStringAsFixed(2)}"),
+            Text("Promedio por suscripción: \$${gastoPromedio.toStringAsFixed(2)}"),
+            Text("Suscripción más cara: \$${gastoTop.toStringAsFixed(2)}"),
             const SizedBox(height: 8),
             if (mostrarFormulario)
               Column(
@@ -159,6 +207,25 @@ class _MyHomePageState extends State<MyHomePage> {
                     ),
                   ),
                   const SizedBox(height: 8),
+                  DropdownButtonFormField<String>(
+                    value: _tipoSeleccionado,
+                    items: const [
+                      DropdownMenuItem(value: 'mensual', child: Text('Mensual')),
+                      DropdownMenuItem(value: 'anual', child: Text('Anual')),
+                    ],
+                    onChanged: (valor) {
+                      if (valor != null) {
+                        setState(() {
+                          _tipoSeleccionado = valor;
+                        });
+                      }
+                    },
+                    decoration: const InputDecoration(
+                      labelText: 'Tipo de suscripción',
+                      border: OutlineInputBorder(),
+                    ),
+                  ),
+                  const SizedBox(height: 8),
                   ElevatedButton(
                     onPressed: agregarDesdeFormulario,
                     child: const Text("Agregar"),
@@ -173,7 +240,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   final s = suscripciones[index];
                   return ListTile(
                     title: Text(s.nombre),
-                    subtitle: Text("${s.tipo} - ${s.precio.toStringAsFixed(2)}\€"),
+                    subtitle: Text("${s.tipo} - \$${s.precio.toStringAsFixed(2)}"),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
                         if (value == 'editar') {
@@ -194,12 +261,12 @@ class _MyHomePageState extends State<MyHomePage> {
               ),
             ),
             const Divider(),
-            Text(
-              "Estadísticas por suscripción:",
-              style: Theme.of(context).textTheme.titleMedium,
-            ),
+            Text("Estadísticas por suscripción:",
+                style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
-            ...estadisticas.entries.map((e) => Text("${e.key}: ${e.value.toStringAsFixed(2)}\€")),
+            ...estadisticas.entries.map(
+                  (e) => Text("${e.key}: \$${e.value.toStringAsFixed(2)}"),
+            ),
           ],
         ),
       ),
