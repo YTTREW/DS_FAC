@@ -201,11 +201,11 @@ class _MyHomePageState extends State<MyHomePage> {
         padding: const EdgeInsets.all(12.0),
         child: Column(
           children: [
-            Text("Gasto mensual total: \$${gastoMensual.toStringAsFixed(2)}"),
-            Text("Gasto anual total: \$${gastoAnual.toStringAsFixed(2)}"),
-            Text("Gasto total: \$${gastoTotal.toStringAsFixed(2)}"),
-            Text("Promedio por suscripción: \$${gastoPromedio.toStringAsFixed(2)}"),
-            Text("Suscripción más cara: \$${gastoTop.toStringAsFixed(2)}"),
+            Text("Gasto mensual total: ${gastoMensual.toStringAsFixed(2)}\€"),
+            Text("Gasto anual total: ${gastoAnual.toStringAsFixed(2)}\€"),
+            Text("Gasto total: ${gastoTotal.toStringAsFixed(2)}\€"),
+            Text("Promedio por suscripción: ${gastoPromedio.toStringAsFixed(2)}\€"),
+            Text("Suscripción más cara: ${gastoTop.toStringAsFixed(2)}\€"),
             const SizedBox(height: 8),
             if (mostrarFormulario)
               Column(
@@ -279,7 +279,7 @@ class _MyHomePageState extends State<MyHomePage> {
                   final s = listaOrdenada[index];
                   return ListTile(
                     title: Text(s.nombre),
-                    subtitle: Text("${s.tipo} - \$${s.precio.toStringAsFixed(2)}"),
+                    subtitle: Text("${s.tipo} - ${s.precio.toStringAsFixed(2)}\€"),
                     trailing: PopupMenuButton<String>(
                       onSelected: (value) {
                         if (value == 'editar') {
@@ -304,7 +304,7 @@ class _MyHomePageState extends State<MyHomePage> {
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 4),
             ...estadisticas.entries.map(
-                  (e) => Text("${e.key}: \$${e.value.toStringAsFixed(2)}"),
+                  (e) => Text("${e.key}: ${e.value.toStringAsFixed(2)}\€"),
             ),
           ],
         ),
