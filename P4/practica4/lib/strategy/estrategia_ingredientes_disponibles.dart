@@ -7,8 +7,20 @@ class FilterByAvailableIngredients implements RecipeFilterStrategy {
 
   @override
   List<Recipe> apply(List<Recipe> recipes) {
-    return recipes.where((recipe) =>
-        recipe.ingredients.every((ing) => availableIngredients.contains(ing))
-    ).toList();
+    List<Recipe> result = [];
+    for (var recipe in recipes) {
+      bool allIngredientsAvailable = true;
+      for (var ing in recipe.ingredients) {
+        if (!availableIngredients.contains(ing)) {
+          allIngredientsAvailable = false;
+          break;
+        }
+      }
+      if (allIngredientsAvailable) {
+        result.add(recipe);
+      }
+    }
+    return result;
+
   }
 }
