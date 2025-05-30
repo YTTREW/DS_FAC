@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'api/recetas_api.dart';
 
 // STRATEGY
 import 'strategy/recipe.dart';
@@ -40,29 +41,23 @@ class RecipePage extends StatefulWidget {
 }
 
 class _RecipePageState extends State<RecipePage> {
-  List<Recipe> recipes = [
-    Recipe(
-      name: 'Tortilla',
-      ingredients: ['huevo', 'patata'],
-      difficulty: 1,
-      foodType: 'salado',
-      createdAt: DateTime.now(),
-    ),
-    Recipe(
-      name: 'Pizza',
-      ingredients: ['harina', 'queso', 'tomate'],
-      difficulty: 3,
-      foodType: 'salado',
-      createdAt: DateTime.now(),
-    ),
-    Recipe(
-      name: 'Tarta',
-      ingredients: ['harina', 'azúcar', 'huevo'],
-      difficulty: 2,
-      foodType: 'dulce',
-      createdAt: DateTime.now(),
-    ),
-  ];
+  @override
+  void initState() {
+    super.initState();
+    _cargarRecetas(); // Llama a la API al iniciar
+  }
+  Future<void> _cargarRecetas() async {
+  try {
+    final data = await RecetaApi.obtenerRecetas();
+    setState(() {
+      recipes = data.map((json) => Recipe.fromJson(json)).toList();
+    });
+  } catch (e) {
+    print("Error al cargar recetas: $e");
+  }
+}
+
+  List<Recipe> recipes = [];
 
   List<String> availableIngredients = ['huevo', 'patata'];
   final Set<String> favoriteRecipes = {};
@@ -133,7 +128,7 @@ class _RecipePageState extends State<RecipePage> {
     });
   }
 
-  void _addNewRecipe() {
+  void _addNewRecipe() async {
     final name = nameController.text.trim();
     final rawIngredients = ingredientsController.text.trim();
 
@@ -145,19 +140,22 @@ class _RecipePageState extends State<RecipePage> {
         .where((e) => e.isNotEmpty)
         .toList();
 
-    setState(() {
-      recipes.add(
-        Recipe(
-          name: name,
-          ingredients: ingredients,
-          difficulty: selectedDifficulty,
-          foodType: selectedFoodType,
-          createdAt: DateTime.now(),
-        ),
-      );
+    final nuevaReceta = Recipe(
+      name: name,
+      ingredients: ingredients,
+      difficulty: selectedDifficulty,
+      foodType: selectedFoodType,
+      createdAt: DateTime.now(),
+    );
+
+    try {
+      await RecetaApi.crearReceta(nuevaReceta.toJson());
       nameController.clear();
       ingredientsController.clear();
-    });
+      _cargarRecetas();
+    } catch (e) {
+      print("Error al crear receta: $e");
+    }
   }
 
   void _editRecipe(Recipe recipe) {
