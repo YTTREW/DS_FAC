@@ -1,11 +1,11 @@
 class RecetasController < ApplicationController
     def index
-        @recetas = Recetum.all
-        render json: @recetas
+        @recetas = Receta.all
+        render json: @recetas.as_json(only: [:id, :nombre, :ingredientes, :instrucciones, :dificultad, :tipo_comida, :created_at])
     end
 
     def create
-        @receta = Recetum.new(receta_params)
+        @receta = Receta.new(receta_params)
         if @receta.save
             render json: @receta, status: :created
         else
@@ -14,7 +14,7 @@ class RecetasController < ApplicationController
     end
 
     def update
-        @receta = Recetum.find(params[:id])
+        @receta = Receta.find(params[:id])
         if @receta.update(receta_params)
             render json: @receta
         else
@@ -23,9 +23,9 @@ class RecetasController < ApplicationController
     end
 
     def destroy
-        @receta = Recetum.find(params[:id])
+        @receta = Receta.find(params[:id])
         if @receta.destroy
-            head :ok
+            head :no_content
         else
             render json: { error: 'Error al eliminar' }, status: :unprocessable_entity
         end
@@ -34,6 +34,6 @@ class RecetasController < ApplicationController
     private
 
     def receta_params
-        params.require(:receta).permit(:nombre, :ingredientes, :dificultad, :tipo)
+        params.require(:receta).permit(:nombre, :ingredientes, :instrucciones, :dificultad, :tipo_comida)
     end
 end

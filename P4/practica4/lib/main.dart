@@ -15,7 +15,8 @@ import 'decorator/decorator_favorito.dart';
 import 'decorator/decorator_food_type.dart';
 import 'decorator/decorator_ingredient_count.dart';
 import 'decorator/decorator_creation_date.dart';
-
+import 'decorator/decorator_difficulty.dart';
+import 'decorator/decorator_instructions.dart';
 void main() {
   runApp(const MyApp());
 }
@@ -49,6 +50,7 @@ class _RecipePageState extends State<RecipePage> {
   Future<void> _cargarRecetas() async {
   try {
     final data = await RecetaApi.obtenerRecetas();
+    print(data);
     setState(() {
       recipes = data.map((json) => Recipe.fromJson(json)).toList();
     });
@@ -59,7 +61,7 @@ class _RecipePageState extends State<RecipePage> {
 
   List<Recipe> recipes = [];
 
-  List<String> availableIngredients = ['huevo', 'patata'];
+  List<String> availableIngredients = ['huevo', 'patata', 'harina', 'melon', 'arroz', 'aceite', 'especias'];
   final Set<String> favoriteRecipes = {};
 
   String selectedFilter = 'Nombre';
@@ -67,6 +69,7 @@ class _RecipePageState extends State<RecipePage> {
 
   final TextEditingController ingredientController = TextEditingController();
   final TextEditingController searchController = TextEditingController();
+  final TextEditingController instructionsController = TextEditingController();
 
   final TextEditingController nameController = TextEditingController();
   final TextEditingController ingredientsController = TextEditingController();
@@ -76,6 +79,8 @@ class _RecipePageState extends State<RecipePage> {
   Recipe? editingRecipe;
   final TextEditingController editNameController = TextEditingController();
   final TextEditingController editIngredientsController = TextEditingController();
+  final TextEditingController editInstructionsController = TextEditingController();
+
   int editDifficulty = 1;
   String editFoodType = 'salado';
 
@@ -131,6 +136,7 @@ class _RecipePageState extends State<RecipePage> {
   void _addNewRecipe() async {
     final name = nameController.text.trim();
     final rawIngredients = ingredientsController.text.trim();
+    final instructions = instructionsController.text.trim();
 
     if (name.isEmpty || rawIngredients.isEmpty) return;
 
@@ -143,6 +149,7 @@ class _RecipePageState extends State<RecipePage> {
     final nuevaReceta = Recipe(
       name: name,
       ingredients: ingredients,
+      instructions: instructions,
       difficulty: selectedDifficulty,
       foodType: selectedFoodType,
       createdAt: DateTime.now(),
@@ -161,6 +168,7 @@ class _RecipePageState extends State<RecipePage> {
   void _editRecipe(Recipe recipe) {
     editingRecipe = recipe;
     editNameController.text = recipe.name;
+    editInstructionsController.text = recipe.instructions;
     editIngredientsController.text = recipe.ingredients.join(', ');
     editDifficulty = recipe.difficulty;
     editFoodType = recipe.foodType;
@@ -182,6 +190,10 @@ class _RecipePageState extends State<RecipePage> {
                     TextField(
                       controller: editIngredientsController,
                       decoration: const InputDecoration(labelText: 'Ingredientes (coma)'),
+                    ),
+                    TextField(
+                      controller: editInstructionsController,
+                      decoration: const InputDecoration(labelText: 'Instrucciones'),
                     ),
                     DropdownButton<int>(
                       value: editDifficulty,
@@ -220,8 +232,9 @@ class _RecipePageState extends State<RecipePage> {
                   onPressed: () {
                     final newName = editNameController.text.trim();
                     final raw = editIngredientsController.text.trim();
+                    final newInstructions = editInstructionsController.text.trim();
 
-                    if (newName.isEmpty || raw.isEmpty || editingRecipe == null) return;
+                    if (newName.isEmpty || raw.isEmpty || newInstructions.isEmpty ||editingRecipe == null) return;
 
                     final newIngredients = raw
                         .split(',')
@@ -235,6 +248,7 @@ class _RecipePageState extends State<RecipePage> {
                         recipes[index] = Recipe(
                           name: newName,
                           ingredients: newIngredients,
+                          instructions: newInstructions,
                           difficulty: editDifficulty,
                           foodType: editFoodType,
                           createdAt: editingRecipe!.createdAt,
@@ -370,6 +384,8 @@ class _RecipePageState extends State<RecipePage> {
                   final hasIngredients = _hasAllIngredients(r);
 
                   RecipeComponent decorated = BasicRecipe(r);
+                  decorated = DifficultyDecorator(decorated, r.difficulty);
+                  decorated = InstructionsDecorator(decorated, r.instructions);
                   decorated = IngredientCountDecorator(decorated, r);
                   decorated = CreationDateDecorator(decorated, r.createdAt);
                   decorated = FoodTypeDecorator(decorated, r.foodType);
@@ -377,12 +393,11 @@ class _RecipePageState extends State<RecipePage> {
                     decorated = FavoriteRecipeDecorator(decorated);
                   }
                   if (!hasIngredients) {
-                    decorated = NoteRecipeDecorator(decorated, 'Faltan ingredientes');
+                    decorated = NoteRecipeDecorator(decorated, 'Algunos de estos ingredientes no están disponibles actualmente');
                   }
 
                   return ListTile(
-                    title: Text(decorated.getDescription()),
-                    subtitle: Text('Ingredientes: ${r.ingredients.join(', ')}'),
+                    title: Text(decorated.getDescription(), maxLines: 10), 
                     trailing: Row(
                       mainAxisSize: MainAxisSize.min,
                       children: [
@@ -400,11 +415,19 @@ class _RecipePageState extends State<RecipePage> {
                         IconButton(
                           icon: const Icon(Icons.delete),
                           color: Colors.red,
-                          onPressed: () {
-                            setState(() {
-                              recipes.remove(r);
-                              favoriteRecipes.remove(r.name);
-                            });
+                          onPressed: () async {
+                            try {
+                                await RecetaApi.eliminarReceta(r.id!); // ← ¡importante el ! porque id no puede ser null!
+                                setState(() {
+                                  recipes.remove(r);
+                                  favoriteRecipes.remove(r.name);
+                                });
+                              } catch (e) {
+                                print("Error al eliminar receta: $e");
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  SnackBar(content: Text("No se pudo eliminar la receta")),
+                                );
+                              }
                           },
                         ),
                       ],

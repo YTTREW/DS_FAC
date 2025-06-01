@@ -1,5 +1,6 @@
 import 'component.dart';
 import '../strategy/recipe.dart';
+
 class BasicRecipe implements RecipeComponent {
   final Recipe recipe;
 

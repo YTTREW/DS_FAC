@@ -2,14 +2,16 @@ class Recipe {
   final int? id;
   final String name;
   final List<String> ingredients;
+  final String instructions;
   final int difficulty;
-  final String foodType; // 'dulce' o 'salado'
+  final String foodType;
   final DateTime createdAt;
 
   Recipe({
     this.id,
     required this.name,
     required this.ingredients,
+    required this.instructions,
     required this.difficulty,
     required this.foodType,
     required this.createdAt,
@@ -20,8 +22,9 @@ class Recipe {
       id: json['id'],
       name: json['nombre'],
       ingredients: (json['ingredientes'] as String).split(',').map((e) => e.trim()).toList(),
+      instructions: json['instrucciones'] ?? '',
       difficulty: json['dificultad'] ?? 1,
-      foodType: json['tipo'] ?? 'salado',
+      foodType: json['tipo_comida'] ?? 'salado',
       createdAt: DateTime.parse(json['created_at']),
     );
   }
@@ -30,8 +33,9 @@ class Recipe {
     return {
       'nombre': name,
       'ingredientes': ingredients.join(','),
+      'instrucciones': instructions,
       'dificultad': difficulty,
-      'tipo': foodType,
+      'tipo_comida': foodType,
     };
   }
 }

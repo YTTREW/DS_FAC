@@ -1,5 +1,7 @@
 import 'component.dart';
 import 'abstract_decorator.dart';
+import 'package:intl/intl.dart';
+
 
 class CreationDateDecorator extends RecipeDecorator {
   final DateTime date;
@@ -9,6 +11,7 @@ class CreationDateDecorator extends RecipeDecorator {
 
   @override
   String getDescription() {
-    return "${super.getDescription()} 📆 ${date.toLocal().toString().split(' ')[0]}";
+    final formattedDate = DateFormat('dd/MM/yyyy').format(date.toLocal());
+    return "${super.getDescription()}\n📆 Fecha de creación: $formattedDate";
   }
 }

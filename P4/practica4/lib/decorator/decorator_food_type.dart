@@ -1,5 +1,6 @@
 import 'component.dart';
 import 'abstract_decorator.dart';
+import '../strategy/recipe.dart';
 
 class FoodTypeDecorator extends RecipeDecorator {
   final String tipo;
@@ -9,6 +10,7 @@ class FoodTypeDecorator extends RecipeDecorator {
   @override
   String getDescription() {
     final emoji = tipo == 'dulce' ? '🍰' : '🍕';
-    return "$emoji ${super.getDescription()}";
+    return "${super.getDescription()}\n🍽️ Tipo de comida: $tipo $emoji\n";
+
   }
 }

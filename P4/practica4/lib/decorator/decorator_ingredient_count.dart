@@ -10,6 +10,8 @@ class IngredientCountDecorator extends RecipeDecorator {
 
   @override
   String getDescription() {
-    return "${super.getDescription()} (${recipe.ingredients.length} ingredientes)";
+    final count = recipe.ingredients.length;
+    final list = recipe.ingredients.join(', ');
+    return "${super.getDescription()}\n🧂 Ingredientes ($count): $list";
   }
 }
