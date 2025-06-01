@@ -366,6 +366,11 @@ class _RecipePageState extends State<RecipePage> {
                   controller: ingredientsController,
                   decoration: const InputDecoration(labelText: 'Ingredientes (coma)'),
                 ),
+                TextField(
+                  controller: instructionsController,
+                  decoration: const InputDecoration(labelText: 'Instrucciones'),
+                  maxLines: 3,
+                ),
                 DropdownButton<int>(
                   value: selectedDifficulty,
                   items: [1, 2, 3]
