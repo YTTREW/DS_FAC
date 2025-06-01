@@ -30,12 +30,27 @@ class RecetaApi {
     }
   }
 
+  // DELETE - Eliminar una receta de la BD
   static Future<void> eliminarReceta(int id) async {
     final url = Uri.parse('$baseUrl/recetas/$id');
     final response = await http.delete(url);
 
     if (response.statusCode != 204) {
       throw Exception('Error al eliminar la receta: ${response.body}');
+    }
+  }
+
+  // PATCH - Actualizar una receta en la BD
+  static Future<void> actualizarReceta(int id, Map<String, dynamic> receta) async {
+    final url = Uri.parse('$baseUrl/recetas/$id');
+    final response = await http.patch(
+      url,
+      headers: {'Content-Type': 'application/json'},
+      body: jsonEncode({'receta': receta}),
+    );
+
+    if (response.statusCode != 200) {
+      throw Exception('Error al actualizar la receta: ${response.body}');
     }
   }
 }

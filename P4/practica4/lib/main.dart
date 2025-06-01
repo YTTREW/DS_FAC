@@ -111,10 +111,11 @@ class _RecipePageState extends State<RecipePage> {
   }
 
   void _addIngredient(String ingredient) {
-    if (ingredient.isNotEmpty && !availableIngredients.contains(ingredient)) {
+    final ing = ingredient.toLowerCase().trim();
+    if (ing.isNotEmpty && !availableIngredients.contains(ing)) {
       setState(() {
-        availableIngredients.add(ingredient.toLowerCase());
-        ingredientController.clear();
+      availableIngredients = List.from(availableIngredients)..add(ing);
+      ingredientController.clear();
       });
     }
   }
@@ -171,7 +172,7 @@ class _RecipePageState extends State<RecipePage> {
     editInstructionsController.text = recipe.instructions;
     editIngredientsController.text = recipe.ingredients.join(', ');
     editDifficulty = recipe.difficulty;
-    editFoodType = recipe.foodType;
+    editFoodType = recipe.foodType.toLowerCase();
 
     showDialog(
       context: context,
@@ -211,7 +212,7 @@ class _RecipePageState extends State<RecipePage> {
                       items: ['dulce', 'salado']
                           .map((tipo) => DropdownMenuItem(
                         value: tipo,
-                        child: Text("Tipo: $tipo"),
+                        child: Text("Tipo: ${tipo[0].toUpperCase()}${tipo.substring(1)}"), // muestra con mayúscula
                       ))
                           .toList(),
                       onChanged: (value) {
@@ -229,7 +230,7 @@ class _RecipePageState extends State<RecipePage> {
                   child: const Text('Cancelar'),
                 ),
                 ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     final newName = editNameController.text.trim();
                     final raw = editIngredientsController.text.trim();
                     final newInstructions = editInstructionsController.text.trim();
@@ -242,22 +243,44 @@ class _RecipePageState extends State<RecipePage> {
                         .where((e) => e.isNotEmpty)
                         .toList();
 
-                    setState(() {
-                      final index = recipes.indexOf(editingRecipe!);
-                      if (index != -1) {
-                        recipes[index] = Recipe(
-                          name: newName,
-                          ingredients: newIngredients,
-                          instructions: newInstructions,
-                          difficulty: editDifficulty,
-                          foodType: editFoodType,
-                          createdAt: editingRecipe!.createdAt,
+                                    
+                    final updatedRecipe = Recipe(
+                      id: editingRecipe!.id,
+                      name: newName,
+                      ingredients: newIngredients,
+                      instructions: newInstructions,
+                      difficulty: editDifficulty,
+                      foodType: editFoodType,
+                      createdAt: editingRecipe!.createdAt,
+                    );
+
+
+                      try {
+                        // Actualizar en backend
+                        await RecetaApi.actualizarReceta(updatedRecipe.id!, {
+                          'nombre': updatedRecipe.name,
+                          'ingredientes': updatedRecipe.ingredients.join(', '),
+                          'instrucciones': updatedRecipe.instructions,
+                          'dificultad': updatedRecipe.difficulty,
+                          'tipo_comida': updatedRecipe.foodType,
+                        });
+
+                        // Actualizar en la lista local y UI
+                        setState(() {
+                          final index = recipes.indexWhere((r) => r.id == updatedRecipe.id);
+                          if (index != -1) {
+                            recipes[index] = updatedRecipe;
+                          }
+                          editingRecipe = null;
+                        });
+
+                        Navigator.of(context).pop();
+                      } catch (e) {
+                        // Manejo de error, muestra mensaje por ejemplo
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Error al actualizar la receta: $e')),
                         );
                       }
-                      editingRecipe = null;
-                    });
-
-                    Navigator.of(context).pop();
                   },
                   child: const Text('Guardar'),
                 ),
