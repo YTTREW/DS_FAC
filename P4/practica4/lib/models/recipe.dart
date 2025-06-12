@@ -40,12 +40,19 @@ class Recipe {
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final json = <String, dynamic>{
       'nombre': name,
-      'ingredientes': ingredients.join(','),
+      'ingredientes': ingredients.join(','), // String separado por comas
       'instrucciones': instructions,
       'dificultad': difficulty,
       'tipo_comida': foodType,
+      'created_at': createdAt.toIso8601String(),
     };
+
+    if (id != null) {
+      json['id'] = id;
+    }
+
+    return json;
   }
 }
