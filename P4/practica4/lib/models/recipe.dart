@@ -20,12 +20,22 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       id: json['id'],
-      name: json['nombre'],
-      ingredients: (json['ingredientes'] as String).split(',').map((e) => e.trim()).toList(),
+      name: json['nombre'] ?? '',
+      ingredients:
+          json['ingredientes'] != null
+              ? (json['ingredientes'] as String)
+                  .split(',')
+                  .map((e) => e.trim())
+                  .where((e) => e.isNotEmpty)
+                  .toList()
+              : [],
       instructions: json['instrucciones'] ?? '',
       difficulty: json['dificultad'] ?? 1,
       foodType: json['tipo_comida'] ?? 'salado',
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt:
+          json['created_at'] != null
+              ? DateTime.parse(json['created_at'])
+              : DateTime.now(),
     );
   }
 

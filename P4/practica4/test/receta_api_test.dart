@@ -1,6 +1,6 @@
 import 'package:flutter_test/flutter_test.dart';
 import 'package:practica4/api/recetas_api.dart';
-import 'package:practica4/strategy/recipe.dart';
+import 'package:practica4/models/recipe.dart';
 
 void main() {
   group('RecetaApi CRUD Tests', () {
@@ -59,7 +59,6 @@ void main() {
 
       expect(actualizada['nombre'], 'Bocadillo de jamón');
     });
-
 
     //Test para eliminar una receta
     test('Eliminar receta', () async {

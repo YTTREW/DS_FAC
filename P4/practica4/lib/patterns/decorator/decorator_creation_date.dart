@@ -1,13 +1,10 @@
-import 'component.dart';
 import 'abstract_decorator.dart';
 import 'package:intl/intl.dart';
-
 
 class CreationDateDecorator extends RecipeDecorator {
   final DateTime date;
 
-  CreationDateDecorator(RecipeComponent component, this.date)
-      : super(component);
+  CreationDateDecorator(super.component, this.date);
 
   @override
   String getDescription() {
