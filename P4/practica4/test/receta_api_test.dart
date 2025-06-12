@@ -1,9 +1,9 @@
 import 'package:flutter_test/flutter_test.dart';
-import 'package:practica4/api/recetas_api.dart';
 import 'package:practica4/models/recipe.dart';
+import 'package:practica4/services/api_service.dart';
 
 void main() {
-  group('RecetaApi CRUD Tests', () {
+  group('ApiService CRUD Tests', () {
     //Test para crear una nueva receta
     test('Crear receta', () async {
       final receta = Recipe(
@@ -15,15 +15,15 @@ void main() {
         createdAt: DateTime.now(),
       );
 
-      await RecetaApi.crearReceta(receta.toJson());
-      final recetas = await RecetaApi.obtenerRecetas();
+      await ApiService.crearReceta(receta.toJson());
+      final recetas = await ApiService.obtenerRecetas();
       final encontrada = recetas.any((r) => r['nombre'] == 'Tarta');
       expect(encontrada, true);
     });
 
     //Test para obtener receta de la BD
     test('Obtener recetas', () async {
-      final recetas = await RecetaApi.obtenerRecetas();
+      final recetas = await ApiService.obtenerRecetas();
       expect(recetas, isA<List<dynamic>>());
     });
 
@@ -38,9 +38,9 @@ void main() {
         foodType: 'salado',
         createdAt: DateTime.now(),
       );
-      await RecetaApi.crearReceta(nueva.toJson());
+      await ApiService.crearReceta(nueva.toJson());
 
-      final recetas = await RecetaApi.obtenerRecetas();
+      final recetas = await ApiService.obtenerRecetas();
       final original = recetas.firstWhere((r) => r['nombre'] == 'Bocadillo');
       final id = original['id'];
 
@@ -52,9 +52,9 @@ void main() {
         'tipo_comida': 'salado',
       };
 
-      await RecetaApi.actualizarReceta(id, datosActualizados);
+      await ApiService.actualizarReceta(id, datosActualizados);
 
-      final recetasActualizadas = await RecetaApi.obtenerRecetas();
+      final recetasActualizadas = await ApiService.obtenerRecetas();
       final actualizada = recetasActualizadas.firstWhere((r) => r['id'] == id);
 
       expect(actualizada['nombre'], 'Bocadillo de jamón');
@@ -70,14 +70,14 @@ void main() {
         foodType: 'dulce',
         createdAt: DateTime.now(),
       );
-      await RecetaApi.crearReceta(receta.toJson());
-      final recetas = await RecetaApi.obtenerRecetas();
+      await ApiService.crearReceta(receta.toJson());
+      final recetas = await ApiService.obtenerRecetas();
       final creada = recetas.firstWhere((r) => r['nombre'] == 'A borrar');
       final id = creada['id'];
 
-      await RecetaApi.eliminarReceta(id);
+      await ApiService.eliminarReceta(id);
 
-      final recetasTrasEliminar = await RecetaApi.obtenerRecetas();
+      final recetasTrasEliminar = await ApiService.obtenerRecetas();
       final existe = recetasTrasEliminar.any((r) => r['id'] == id);
 
       expect(existe, false);
