@@ -1,4 +1,4 @@
-import '../abstract_decorator.dart';
+import '../recipe_decorator.dart';
 
 class NoteRecipeDecorator extends RecipeDecorator {
   final String note;

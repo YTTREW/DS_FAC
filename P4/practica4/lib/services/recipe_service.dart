@@ -1,10 +1,10 @@
+import 'api_service.dart';
 import '../models/recipe.dart';
-import '../api/recetas_api.dart';
 
 class RecipeService {
   static Future<List<Recipe>> getAllRecipes() async {
     try {
-      final data = await RecetaApi.obtenerRecetas();
+      final data = await ApiService.obtenerRecetas();
       return data.map((json) => Recipe.fromJson(json)).toList();
     } catch (e) {
       throw RecipeException('Error al cargar recetas: $e');
@@ -13,7 +13,7 @@ class RecipeService {
 
   static Future<Recipe> createRecipe(Recipe recipe) async {
     try {
-      await RecetaApi.crearReceta(recipe.toJson());
+      await ApiService.crearReceta(recipe.toJson());
       return recipe;
     } catch (e) {
       throw RecipeException('Error al crear receta: $e');
@@ -22,7 +22,7 @@ class RecipeService {
 
   static Future<void> updateRecipe(Recipe recipe) async {
     try {
-      await RecetaApi.actualizarReceta(recipe.id!, {
+      await ApiService.actualizarReceta(recipe.id!, {
         'nombre': recipe.name,
         'ingredientes': recipe.ingredients.join(', '),
         'instrucciones': recipe.instructions,
@@ -36,7 +36,7 @@ class RecipeService {
 
   static Future<void> deleteRecipe(int id) async {
     try {
-      await RecetaApi.eliminarReceta(id);
+      await ApiService.eliminarReceta(id);
     } catch (e) {
       throw RecipeException('Error al eliminar receta: $e');
     }

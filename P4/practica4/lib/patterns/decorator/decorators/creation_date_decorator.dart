@@ -1,4 +1,4 @@
-import 'abstract_decorator.dart';
+import '../recipe_decorator.dart';
 import 'package:intl/intl.dart';
 
 class CreationDateDecorator extends RecipeDecorator {

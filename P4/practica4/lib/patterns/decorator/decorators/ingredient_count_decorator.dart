@@ -1,4 +1,4 @@
-import '../abstract_decorator.dart';
+import '../recipe_decorator.dart';
 import '../../../models/recipe.dart';
 
 class IngredientCountDecorator extends RecipeDecorator {

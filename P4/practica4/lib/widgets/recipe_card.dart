@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practica4/patterns/decorator/decorators/creation_date_decorator.dart';
 import 'package:practica4/patterns/decorator/decorators/food_type_decorator.dart';
 import 'package:practica4/patterns/decorator/decorators/ingredient_count_decorator.dart';
 import 'package:practica4/patterns/decorator/decorators/instructions_decorator.dart';
@@ -37,6 +38,7 @@ class RecipeCard extends StatelessWidget {
         decorated = FoodTypeDecorator(decorated, recipe.foodType);
         decorated = IngredientCountDecorator(decorated, recipe);
         decorated = InstructionsDecorator(decorated, recipe.instructions);
+        decorated = CreationDateDecorator(decorated, recipe.createdAt);
 
         if (isFavorite) {
           decorated = FavoriteRecipeDecorator(decorated);
