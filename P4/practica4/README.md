@@ -96,7 +96,7 @@ Recipe {
 - Tests unitarios independientes y reproducibles
 - Validación de estados antes y después de operaciones
 
-## 🏗️ Arquitectura del Proyecto
+## Arquitectura del Proyecto
 
 ### Patrones de Diseño Implementados
 
@@ -114,30 +114,86 @@ Añade funcionalidades adicionales a la visualización de recetas sin modificar 
 
 #### Decorator Pattern - Diagrama Detallado
 
-![Diagrama UML Decorator](docs/diagrams/uml-decorator.png)
+![Diagrama UML Decorator](docs/diagrams/practica4-decorator.png)
 
-_Figura 1: Implementación de los patrones Strategy y Decorator en el sistema de gestión de recetas_
+_Figura 1: Diagrama UML del Patrón Decorator en el sistema de gestión de recetas_
 
 #### Strategy Pattern - Diagrama Detallado
 
-![Patrón Strategy](docs/diagrams/uml-strategy.png)
+![Patrón Strategy](docs/diagrams/practica4-strategy.png)
 
-_Figura 2: Patrón Strategy para filtrado dinámico de recetas por nombre, dificultad e ingredientes disponibles_
+_Figura 2: Diagrama UML del Patrón Strategy en el sistema de gestión de recetas_
 
-### Estructura de Carpetas
+## Configuración del Backend (Ruby on Rails)
 
+### Navegar al directorio del backend
+
+```bash
+cd practica4/gestor_de_recetas_api
 ```
-practica4/
-├── lib/
-│   ├── api/              # Comunicación con backend
-│   ├── models/           # Modelos de datos
-│   ├── strategy/         # Patrón Strategy
-│   ├── decorator/        # Patrón Decorator
-│   ├── screens/          # Pantallas de la aplicación
-│   └── widgets/          # Componentes reutilizables
-├── test/                 # Pruebas unitarias
-├── docs/                 # Documentación y diagramas
-│   └── diagrams/         # Diagramas UML
-├── gestor_de_recetas_api/  # Backend Ruby on Rails
-└── README.md
+
+### Instalar dependencias de Ruby
+
+```bash
+bundle install
+```
+
+### Configurar la base de datos
+
+```bash
+# Crear la base de datos
+rails db:create
+
+# Ejecutar migraciones
+rails db:migrate
+
+# (Opcional) Poblar con datos de prueba
+rails db:seed
+```
+
+### Lanzar el servidor Rails
+
+```bash
+rails server
+```
+
+El servidor estará disponible en:
+
+- **Local**: `http://localhost:3000`
+
+### Verificar que el backend funciona
+
+```bash
+# Probar endpoint de recetas
+curl http://localhost:3000/recetas
+
+# Debería retornar un JSON con las recetas (puede estar vacío inicialmente)
+```
+
+## Configuración del Frontend (Flutter)
+
+### Navegar al directorio del frontend
+
+```bash
+cd practica4/
+```
+
+### Instalar dependencias de Flutter
+
+```bash
+flutter pub get
+```
+
+### Configurar la URL del API según tu entorno
+
+Edita el archivo `lib/services/api_service.dart` y ajusta la URL base:
+
+```dart
+class ApiService {
+  // Para emulador Android
+  // static const String baseUrl = 'http://10.0.2.2:3000';
+
+  // Para navegador web o desarrollo local
+  static const String baseUrl = 'http://localhost:3000';
+}
 ```
