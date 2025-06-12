@@ -1,4 +1,5 @@
-import 'component.dart';
+import 'recipe_component.dart';
+
 abstract class RecipeDecorator implements RecipeComponent {
   final RecipeComponent recipeComponent;
 

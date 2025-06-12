@@ -1,12 +1,10 @@
-import 'component.dart';
-import 'abstract_decorator.dart';
-import '../strategy/recipe.dart';
+import '../recipe_decorator.dart';
+import '../../../models/recipe.dart';
 
 class IngredientCountDecorator extends RecipeDecorator {
   final Recipe recipe;
 
-  IngredientCountDecorator(RecipeComponent component, this.recipe)
-      : super(component);
+  IngredientCountDecorator(super.component, this.recipe);
 
   @override
   String getDescription() {

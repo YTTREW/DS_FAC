@@ -20,22 +20,39 @@ class Recipe {
   factory Recipe.fromJson(Map<String, dynamic> json) {
     return Recipe(
       id: json['id'],
-      name: json['nombre'],
-      ingredients: (json['ingredientes'] as String).split(',').map((e) => e.trim()).toList(),
+      name: json['nombre'] ?? '',
+      ingredients:
+          json['ingredientes'] != null
+              ? (json['ingredientes'] as String)
+                  .split(',')
+                  .map((e) => e.trim())
+                  .where((e) => e.isNotEmpty)
+                  .toList()
+              : [],
       instructions: json['instrucciones'] ?? '',
       difficulty: json['dificultad'] ?? 1,
       foodType: json['tipo_comida'] ?? 'salado',
-      createdAt: DateTime.parse(json['created_at']),
+      createdAt:
+          json['created_at'] != null
+              ? DateTime.parse(json['created_at'])
+              : DateTime.now(),
     );
   }
 
   Map<String, dynamic> toJson() {
-    return {
+    final json = <String, dynamic>{
       'nombre': name,
-      'ingredientes': ingredients.join(','),
+      'ingredientes': ingredients.join(','), // String separado por comas
       'instrucciones': instructions,
       'dificultad': difficulty,
       'tipo_comida': foodType,
+      'created_at': createdAt.toIso8601String(),
     };
+
+    if (id != null) {
+      json['id'] = id;
+    }
+
+    return json;
   }
 }

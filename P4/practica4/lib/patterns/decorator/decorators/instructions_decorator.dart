@@ -1,6 +1,4 @@
-import 'component.dart';
-import 'abstract_decorator.dart';
-import '../strategy/recipe.dart';
+import '../recipe_decorator.dart';
 
 class InstructionsDecorator extends RecipeDecorator {
   final String instructions;
@@ -12,4 +10,3 @@ class InstructionsDecorator extends RecipeDecorator {
     return "${super.getDescription()}\n📋 Instrucciones: $instructions";
   }
 }
-
