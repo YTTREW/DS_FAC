@@ -8,6 +8,6 @@ class FoodTypeDecorator extends RecipeDecorator {
   @override
   String getDescription() {
     final emoji = tipo == 'dulce' ? '🍰' : '🍕';
-    return "${super.getDescription()}\n🍽️ Tipo de comida: $tipo $emoji\n";
+    return "${super.getDescription()}\n🍽️ Tipo de comida: $tipo $emoji";
   }
 }

@@ -5,6 +5,6 @@ class FavoriteRecipeDecorator extends RecipeDecorator {
 
   @override
   String getDescription() {
-    return "${super.getDescription()} ❤️ (Favorita)";
+    return "${super.getDescription()}\n❤️ (Favorita)";
   }
 }

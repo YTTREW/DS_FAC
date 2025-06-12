@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:practica4/patterns/decorator/decorators/food_type_decorator.dart';
+import 'package:practica4/patterns/decorator/decorators/ingredient_count_decorator.dart';
+import 'package:practica4/patterns/decorator/decorators/instructions_decorator.dart';
 import 'package:provider/provider.dart';
 import '../models/recipe.dart';
 import '../providers/recipe_provider.dart';
@@ -29,27 +32,56 @@ class RecipeCard extends StatelessWidget {
 
         // Aplicar patrón Decorator
         RecipeComponent decorated = BaseRecipe(recipe);
+
         decorated = DifficultyDecorator(decorated, recipe.difficulty);
+        decorated = FoodTypeDecorator(decorated, recipe.foodType);
+        decorated = IngredientCountDecorator(decorated, recipe);
+        decorated = InstructionsDecorator(decorated, recipe.instructions);
 
         if (isFavorite) {
           decorated = FavoriteRecipeDecorator(decorated);
         }
 
         return Card(
-          margin: const EdgeInsets.symmetric(vertical: 4),
-          child: ListTile(
+          margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 4),
+          elevation: 2,
+          child: ExpansionTile(
             title: Text(
-              decorated.getDescription(),
-              maxLines: 3,
-              overflow: TextOverflow.ellipsis,
+              recipe.name,
+              style: Theme.of(
+                context,
+              ).textTheme.titleMedium?.copyWith(fontWeight: FontWeight.bold),
             ),
-            subtitle:
-                hasAllIngredients
-                    ? null
-                    : const Text(
-                      'Faltan ingredientes',
-                      style: TextStyle(color: Colors.orange),
+            subtitle: Row(
+              children: [
+                Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 6,
+                    vertical: 2,
+                  ),
+                  decoration: BoxDecoration(
+                    color:
+                        hasAllIngredients
+                            ? Colors.green.shade50
+                            : Colors.orange.shade50,
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  child: Text(
+                    hasAllIngredients ? 'Listo' : 'Faltan ingredientes',
+                    style: TextStyle(
+                      fontSize: 12,
+                      color:
+                          hasAllIngredients
+                              ? Colors.green.shade700
+                              : Colors.orange.shade700,
                     ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                if (isFavorite)
+                  Icon(Icons.favorite, color: Colors.red, size: 16),
+              ],
+            ),
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: [
@@ -68,6 +100,40 @@ class RecipeCard extends StatelessWidget {
                 ),
               ],
             ),
+            children: [
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      width: double.infinity,
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Theme.of(context)
+                            .colorScheme
+                            .surfaceContainerHighest
+                            .withValues(alpha: 0.3),
+                        borderRadius: BorderRadius.circular(8),
+                      ),
+                      child: Text(
+                        decorated.getDescription(),
+                        style: Theme.of(
+                          context,
+                        ).textTheme.bodySmall?.copyWith(height: 1.4),
+                      ),
+                    ),
+                    const SizedBox(height: 8),
+                    Text(
+                      'Creada: ${recipe.createdAt.day}/${recipe.createdAt.month}/${recipe.createdAt.year}',
+                      style: Theme.of(context).textTheme.labelSmall?.copyWith(
+                        color: Theme.of(context).colorScheme.onSurfaceVariant,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ],
           ),
         );
       },

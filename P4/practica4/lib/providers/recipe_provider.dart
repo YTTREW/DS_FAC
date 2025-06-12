@@ -103,6 +103,17 @@ class RecipeProvider extends ChangeNotifier {
     notifyListeners();
   }
 
+  // Statistics
+  int get totalRecipes => _recipes.length;
+  int get filteredRecipesCount => filteredRecipes.length;
+  int get favoriteRecipesCount => _favoriteRecipes.length;
+
+  double get averageDifficulty {
+    if (_recipes.isEmpty) return 0.0;
+    final sum = _recipes.fold<int>(0, (sum, recipe) => sum + recipe.difficulty);
+    return sum / _recipes.length;
+  }
+
   // Private helper methods
   void _setLoading(bool loading) {
     _isLoading = loading;
