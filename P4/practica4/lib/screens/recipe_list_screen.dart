@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:practica4/providers/ingredient_provider.dart';
+import 'package:practica4/screens/ingredient_management_screen.dart';
 import 'package:provider/provider.dart';
 import '../providers/recipe_provider.dart';
 import '../widgets/filter_dropdown.dart';
@@ -13,35 +15,62 @@ class RecipeListScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Mis Recetas'),
+        title: const Text('Recetas'),
+        backgroundColor: Colors.teal,
         actions: [
-          // Mostrar información del filtro activo
-          Consumer<RecipeProvider>(
-            builder: (context, provider, child) {
-              if (provider.hasActiveFilter) {
-                return IconButton(
-                  icon: const Icon(Icons.filter_alt),
-                  onPressed: () {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          'Filtro activo: ${provider.filterDescription}',
-                        ),
-                        action: SnackBarAction(
-                          label: 'Limpiar',
-                          onPressed: () => provider.clearFilter(),
+          IconButton(
+            onPressed:
+                () => Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => const RecipeFormScreen(),
+                  ),
+                ),
+            icon: const Icon(Icons.add),
+            tooltip: 'Crear nueva receta',
+          ),
+          Consumer<IngredientProvider>(
+            builder:
+                (context, provider, child) => IconButton(
+                  onPressed:
+                      () => Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder:
+                              (context) => const IngredientManagementScreen(),
                         ),
                       ),
-                    );
-                  },
-                );
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-          IconButton(
-            icon: const Icon(Icons.add),
-            onPressed: () => _navigateToAddRecipe(context),
+                  icon: Stack(
+                    children: [
+                      const Icon(Icons.kitchen),
+                      if (provider.ingredientCount > 0)
+                        Positioned(
+                          right: 0,
+                          top: 0,
+                          child: Container(
+                            padding: const EdgeInsets.all(2),
+                            decoration: BoxDecoration(
+                              color: Colors.red,
+                              borderRadius: BorderRadius.circular(6),
+                            ),
+                            constraints: const BoxConstraints(
+                              minWidth: 12,
+                              minHeight: 12,
+                            ),
+                            child: Text(
+                              '${provider.ingredientCount}',
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 8,
+                              ),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                  tooltip: 'Gestionar ingredientes',
+                ),
           ),
         ],
       ),
@@ -122,13 +151,6 @@ class RecipeListScreen extends StatelessWidget {
           ),
         ],
       ),
-    );
-  }
-
-  void _navigateToAddRecipe(BuildContext context) {
-    Navigator.push(
-      context,
-      MaterialPageRoute(builder: (context) => RecipeFormScreen()),
     );
   }
 

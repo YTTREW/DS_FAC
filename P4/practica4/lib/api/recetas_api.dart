@@ -21,7 +21,6 @@ class RecetaApi {
 
       if (response.statusCode == 200) {
         final List<dynamic> data = jsonDecode(response.body);
-        // ✅ Cast correcto a List<Map<String, dynamic>>
         return data.cast<Map<String, dynamic>>();
       } else {
         throw Exception('Error HTTP ${response.statusCode}: ${response.body}');

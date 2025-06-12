@@ -20,7 +20,8 @@ class IngredientChip extends StatefulWidget {
     this.showDelete = true,
     this.isSelected = false,
     this.isAvailable = true,
-    this.variant = ChipVariant.available,
+    this.variant =
+        ChipVariant.selectable, // ✅ Cambio por defecto para nueva pantalla
     this.customColor,
   });
 
@@ -37,7 +38,7 @@ class _IngredientChipState extends State<IngredientChip>
   void initState() {
     super.initState();
     _animationController = AnimationController(
-      duration: const Duration(milliseconds: 200),
+      duration: const Duration(milliseconds: 150), // ✅ Animación más rápida
       vsync: this,
     );
 
@@ -98,7 +99,10 @@ class _IngredientChipState extends State<IngredientChip>
         ),
       ),
       avatar: Icon(Icons.check_circle, size: 18, color: Colors.green.shade600),
-      onDeleted: widget.showDelete ? widget.onDeleted : null,
+      onDeleted:
+          widget.showDelete
+              ? (widget.onDeleted ?? () => _removeFromProvider(context))
+              : null,
       deleteIcon: const Icon(Icons.close, size: 16),
       deleteIconColor: Colors.green.shade600,
       backgroundColor: Colors.green.shade50,
@@ -137,15 +141,15 @@ class _IngredientChipState extends State<IngredientChip>
       onTapDown: (_) => _animationController.forward(),
       onTapUp: (_) => _animationController.reverse(),
       onTapCancel: () => _animationController.reverse(),
-      onTap: widget.onTap,
+      onTap: widget.onTap ?? () => _toggleInProvider(context),
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
         decoration: BoxDecoration(
           color: isAvailable ? Colors.green.shade50 : Colors.red.shade50,
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(20),
           border: Border.all(
-            color: isAvailable ? Colors.green.shade200 : Colors.red.shade200,
-            width: 1,
+            color: isAvailable ? Colors.green.shade300 : Colors.red.shade300,
+            width: 1.5,
           ),
         ),
         child: Row(
@@ -188,12 +192,14 @@ class _IngredientChipState extends State<IngredientChip>
       backgroundColor: Colors.blue.shade50,
       side: BorderSide(color: Colors.blue.shade200),
       onPressed: () {
+        _animationController.forward().then((_) {
+          _animationController.reverse();
+        });
+
         if (widget.onTap != null) {
           widget.onTap!();
         } else {
-          // Añadir automáticamente a ingredientes disponibles
-          context.read<IngredientProvider>().addIngredient(widget.ingredient);
-          _showAddedSnackBar(context);
+          _addToProvider(context);
         }
       },
     );
@@ -220,7 +226,11 @@ class _IngredientChipState extends State<IngredientChip>
                 size: 16,
                 color: Theme.of(context).colorScheme.onPrimary,
               )
-              : null,
+              : Icon(
+                Icons.add,
+                size: 16,
+                color: Theme.of(context).colorScheme.onSurface,
+              ),
       backgroundColor:
           isSelected
               ? Theme.of(context).colorScheme.primary
@@ -231,75 +241,119 @@ class _IngredientChipState extends State<IngredientChip>
             isSelected
                 ? Theme.of(context).colorScheme.primary
                 : Theme.of(context).dividerColor,
+        width: isSelected ? 2 : 1,
       ),
       onSelected: (selected) {
+        _animationController.forward().then((_) {
+          _animationController.reverse();
+        });
+
         if (widget.onTap != null) {
           widget.onTap!();
         } else {
-          // Toggle automático en provider
-          context.read<IngredientProvider>().toggleIngredient(
-            widget.ingredient,
-          );
+          _toggleInProvider(context);
         }
       },
       selected: isSelected,
     );
   }
 
-  String _formatIngredientName(String ingredient) {
-    // Capitalizar primera letra y limpiar formato
-    if (ingredient.isEmpty) return ingredient;
-    return ingredient[0].toUpperCase() + ingredient.substring(1).toLowerCase();
+  // ✅ Métodos helper para gestionar el provider
+  void _addToProvider(BuildContext context) {
+    context.read<IngredientProvider>().addIngredient(widget.ingredient);
+    _showSnackBar(
+      context,
+      '${_formatIngredientName(widget.ingredient)} añadido',
+      Icons.check_circle,
+      Colors.green,
+    );
   }
 
-  void _showAddedSnackBar(BuildContext context) {
+  void _removeFromProvider(BuildContext context) {
+    context.read<IngredientProvider>().removeIngredient(widget.ingredient);
+    _showSnackBar(
+      context,
+      '${_formatIngredientName(widget.ingredient)} eliminado',
+      Icons.remove_circle,
+      Colors.orange,
+    );
+  }
+
+  void _toggleInProvider(BuildContext context) {
+    final provider = context.read<IngredientProvider>();
+    if (provider.hasIngredient(widget.ingredient)) {
+      _removeFromProvider(context);
+    } else {
+      _addToProvider(context);
+    }
+  }
+
+  String _formatIngredientName(String ingredient) {
+    if (ingredient.isEmpty) return ingredient;
+    // ✅ Mejorar formato: capitalizar cada palabra
+    return ingredient
+        .split(' ')
+        .map(
+          (word) =>
+              word.isNotEmpty
+                  ? word[0].toUpperCase() + word.substring(1).toLowerCase()
+                  : word,
+        )
+        .join(' ');
+  }
+
+  void _showSnackBar(
+    BuildContext context,
+    String message,
+    IconData icon,
+    Color color,
+  ) {
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
         content: Row(
           children: [
-            const Icon(Icons.check_circle, color: Colors.white),
+            Icon(icon, color: Colors.white, size: 20),
             const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                '${_formatIngredientName(widget.ingredient)} añadido a tus ingredientes',
-              ),
-            ),
+            Expanded(child: Text(message)),
           ],
         ),
-        backgroundColor: Colors.green,
+        backgroundColor: color,
         duration: const Duration(seconds: 2),
         behavior: SnackBarBehavior.floating,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+        margin: const EdgeInsets.all(16),
       ),
     );
   }
 }
 
-// Enum para diferentes variantes del chip
+// ✅ Enum actualizado
 enum ChipVariant {
   available, // Ingrediente disponible (verde, con delete)
   missing, // Ingrediente faltante (naranja, warning)
   recipe, // En contexto de receta (verde/rojo según disponibilidad)
   suggestion, // Sugerencia para añadir (azul, con +)
-  selectable, // Chip seleccionable (toggle on/off)
+  selectable, // Chip seleccionable (toggle on/off) - NUEVO DEFECTO
 }
 
-// Widget específico para lista de ingredientes de receta
+// ✅ Widget específico para lista de ingredientes de receta
 class RecipeIngredientsChips extends StatelessWidget {
   final List<String> ingredients;
   final bool showAvailability;
+  final bool interactive;
 
   const RecipeIngredientsChips({
     super.key,
     required this.ingredients,
     this.showAvailability = true,
+    this.interactive = false,
   });
 
   @override
   Widget build(BuildContext context) {
     return Wrap(
-      spacing: 6,
-      runSpacing: 4,
+      spacing: 8,
+      runSpacing: 6,
       children:
           ingredients.map((ingredient) {
             return IngredientChip(
@@ -315,15 +369,17 @@ class RecipeIngredientsChips extends StatelessWidget {
   }
 }
 
-// Widget para sugerencias de ingredientes
+// ✅ Widget para sugerencias de ingredientes (mejorado)
 class IngredientSuggestions extends StatelessWidget {
   final List<String> suggestions;
   final Function(String)? onSuggestionTapped;
+  final int maxSuggestions;
 
   const IngredientSuggestions({
     super.key,
     required this.suggestions,
     this.onSuggestionTapped,
+    this.maxSuggestions = 8,
   });
 
   @override
@@ -333,18 +389,29 @@ class IngredientSuggestions extends StatelessWidget {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
-        Text(
-          'Sugerencias:',
-          style: Theme.of(context).textTheme.labelMedium?.copyWith(
-            color: Theme.of(context).colorScheme.onSurfaceVariant,
-          ),
+        Row(
+          children: [
+            Icon(
+              Icons.lightbulb_outline,
+              size: 16,
+              color: Theme.of(context).colorScheme.primary,
+            ),
+            const SizedBox(width: 4),
+            Text(
+              'Ingredientes populares:',
+              style: Theme.of(context).textTheme.labelMedium?.copyWith(
+                color: Theme.of(context).colorScheme.primary,
+                fontWeight: FontWeight.w600,
+              ),
+            ),
+          ],
         ),
-        const SizedBox(height: 4),
+        const SizedBox(height: 8),
         Wrap(
           spacing: 6,
-          runSpacing: 4,
+          runSpacing: 6,
           children:
-              suggestions.take(5).map((suggestion) {
+              suggestions.take(maxSuggestions).map((suggestion) {
                 return IngredientChip(
                   ingredient: suggestion,
                   variant: ChipVariant.suggestion,
@@ -353,6 +420,65 @@ class IngredientSuggestions extends StatelessWidget {
               }).toList(),
         ),
       ],
+    );
+  }
+}
+
+// ✅ Widget para mostrar ingredientes seleccionados
+class SelectedIngredientsDisplay extends StatelessWidget {
+  final List<String> selectedIngredients;
+  final Function(String)? onRemove;
+  final String? emptyMessage;
+
+  const SelectedIngredientsDisplay({
+    super.key,
+    required this.selectedIngredients,
+    this.onRemove,
+    this.emptyMessage,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (selectedIngredients.isEmpty && emptyMessage != null) {
+      return Container(
+        padding: const EdgeInsets.all(16),
+        decoration: BoxDecoration(
+          color: Theme.of(context).colorScheme.surfaceVariant.withOpacity(0.3),
+          borderRadius: BorderRadius.circular(8),
+          border: Border.all(color: Theme.of(context).dividerColor),
+        ),
+        child: Row(
+          children: [
+            Icon(
+              Icons.info_outline,
+              color: Theme.of(context).colorScheme.onSurfaceVariant,
+            ),
+            const SizedBox(width: 8),
+            Expanded(
+              child: Text(
+                emptyMessage!,
+                style: Theme.of(context).textTheme.bodyMedium?.copyWith(
+                  color: Theme.of(context).colorScheme.onSurfaceVariant,
+                ),
+              ),
+            ),
+          ],
+        ),
+      );
+    }
+
+    return Wrap(
+      spacing: 8,
+      runSpacing: 8,
+      children:
+          selectedIngredients.map((ingredient) {
+            return IngredientChip(
+              ingredient: ingredient,
+              variant: ChipVariant.available,
+              onDeleted: onRemove != null ? () => onRemove!(ingredient) : null,
+              showDelete: onRemove != null,
+            );
+          }).toList(),
     );
   }
 }

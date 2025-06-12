@@ -1,5 +1,5 @@
 import 'recipe_filter_strategy.dart';
-import '../../models/recipe.dart'; // ✅ Cambiar import
+import '../../models/recipe.dart';
 
 class FilterByName implements RecipeFilterStrategy {
   @override

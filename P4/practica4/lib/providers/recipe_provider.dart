@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import '../models/recipe.dart';
-import '../api/recetas_api.dart'; // ✅ Cambiar import
+import '../services/api_service.dart';
 import '../patterns/strategy/recipe_filter_strategy.dart';
 import '../patterns/strategy/recipe_filter_context.dart';
 
@@ -31,7 +31,7 @@ class RecipeProvider extends ChangeNotifier {
     _setLoading(true);
     _clearError();
     try {
-      final data = await RecetaApi.obtenerRecetas();
+      final data = await ApiService.obtenerRecetas();
       _recipes = data.map((json) => Recipe.fromJson(json)).toList();
     } catch (e) {
       _setError('Error al cargar recetas: $e');
@@ -43,8 +43,7 @@ class RecipeProvider extends ChangeNotifier {
   Future<bool> addRecipe(Recipe recipe) async {
     try {
       _clearError();
-      await RecetaApi.crearReceta(recipe.toJson());
-      // Recargar todas las recetas para obtener el ID generado
+      await ApiService.crearReceta(recipe.toJson());
       await loadRecipes();
       return true;
     } catch (e) {
@@ -54,27 +53,12 @@ class RecipeProvider extends ChangeNotifier {
   }
 
   Future<bool> updateRecipe(Recipe recipe) async {
+    if (recipe.id == null) return false;
+
     try {
       _clearError();
-      if (recipe.id == null) {
-        _setError('No se puede actualizar una receta sin ID');
-        return false;
-      }
-
-      await RecetaApi.actualizarReceta(recipe.id!, {
-        'nombre': recipe.name,
-        'ingredientes': recipe.ingredients.join(', '),
-        'instrucciones': recipe.instructions,
-        'dificultad': recipe.difficulty,
-        'tipo_comida': recipe.foodType,
-      });
-
-      // Actualizar en la lista local
-      final index = _recipes.indexWhere((r) => r.id == recipe.id);
-      if (index != -1) {
-        _recipes[index] = recipe;
-        notifyListeners();
-      }
+      await ApiService.actualizarReceta(recipe.id!, recipe.toJson());
+      await loadRecipes();
       return true;
     } catch (e) {
       _setError('Error al actualizar receta: $e');
@@ -83,17 +67,12 @@ class RecipeProvider extends ChangeNotifier {
   }
 
   Future<bool> deleteRecipe(Recipe recipe) async {
+    if (recipe.id == null) return false;
+
     try {
       _clearError();
-      if (recipe.id == null) {
-        _setError('No se puede eliminar una receta sin ID');
-        return false;
-      }
-
-      await RecetaApi.eliminarReceta(recipe.id!);
-      _recipes.remove(recipe);
-      _favoriteRecipes.remove(recipe.name);
-      notifyListeners();
+      await ApiService.eliminarReceta(recipe.id!);
+      await loadRecipes();
       return true;
     } catch (e) {
       _setError('Error al eliminar receta: $e');
@@ -101,7 +80,6 @@ class RecipeProvider extends ChangeNotifier {
     }
   }
 
-  // ✅ Resto de métodos sin cambios
   void toggleFavorite(String recipeName) {
     if (_favoriteRecipes.contains(recipeName)) {
       _favoriteRecipes.remove(recipeName);
@@ -123,17 +101,6 @@ class RecipeProvider extends ChangeNotifier {
   void clearFilter() {
     _filterContext.clearStrategy();
     notifyListeners();
-  }
-
-  // Statistics
-  int get totalRecipes => _recipes.length;
-  int get filteredRecipesCount => filteredRecipes.length;
-  int get favoriteRecipesCount => _favoriteRecipes.length;
-
-  double get averageDifficulty {
-    if (_recipes.isEmpty) return 0.0;
-    final sum = _recipes.fold<int>(0, (sum, recipe) => sum + recipe.difficulty);
-    return sum / _recipes.length;
   }
 
   // Private helper methods

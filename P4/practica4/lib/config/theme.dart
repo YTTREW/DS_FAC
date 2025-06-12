@@ -28,12 +28,10 @@ class AppTheme {
         secondary: secondaryColor,
         tertiary: accentColor,
         surface: surfaceColor,
-        background: backgroundColor,
         error: errorColor,
         onPrimary: textLight,
         onSecondary: textLight,
         onSurface: textPrimary,
-        onBackground: textPrimary,
         onError: textLight,
       ),
 
@@ -252,13 +250,11 @@ class AppTheme {
         primary: Color(0xFF4CAF50),
         secondary: Color(0xFF81C784),
         tertiary: accentColor,
-        surface: Color(0xFF1E1E1E),
-        background: Color(0xFF121212),
+        surface: Color(0xFF121212),
         error: errorColor,
         onPrimary: Color(0xFF000000),
         onSecondary: Color(0xFF000000),
         onSurface: Color(0xFFE0E0E0),
-        onBackground: Color(0xFFE0E0E0),
         onError: Color(0xFF000000),
       ),
     );
@@ -269,7 +265,7 @@ class AppTheme {
 extension AppColors on ColorScheme {
   Color get recipeCardBackground =>
       brightness == Brightness.light
-          ? const Color(0xFFFFFFF)
+          ? const Color(0xFFFFFFFF)
           : const Color(0xFF2C2C2C);
 
   Color get favoriteColor => const Color(0xFFE91E63);
